@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SubastaYa.Core.Entities
 {
-    internal class Wallet
+    public class Wallet
     {
         public int Id { get; set; }
         public User UserID { get; set; }
