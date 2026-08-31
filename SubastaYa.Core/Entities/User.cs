@@ -8,10 +8,14 @@ namespace SubastaYa.Core.Entities
     public class User
     {
         public int Id {  get; set; }
-
+        
+        [Required]
+        [MaxLength(100)]
         public string Name { get; set; }
 
-        [Required, EmailAddress]
+        [Required]
+        [EmailAddress]
+        [MaxLength(150)]
         public string Email { get; set; }
 
         [Required]
@@ -21,7 +25,7 @@ namespace SubastaYa.Core.Entities
 
         // Navigation properties (Relationships)
         public Wallet Wallet { get; set; }
-        public ICollection<Auction> publishedAuctions { get; set; } = new List<Auction>();
-        public ICollection<Bid> pujasRealizadas { get; set; } = new List<Bid>();
+        public ICollection<Auction> publishedAuctions { get; set; }
+        public ICollection<Bid> bidsPlaced { get; set; } 
     }
 }

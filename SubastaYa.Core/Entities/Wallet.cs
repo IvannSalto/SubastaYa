@@ -21,14 +21,14 @@ namespace SubastaYa.Core.Entities
         [Column(TypeName = "decimal(18,2)")]
         public double AvailableBalance { get; set; }
 
-        [Timestamp] // Optimistic Locking
+        [ConcurrencyCheck]
         public int Version { get; set;}
 
         // Clave foránea y relación 1 a 1 con User
-        public int UsuarioId { get; set; }
-        public User Usuario { get; set; } = null!;
+        [ForeignKey("UserId")]
+        public User User { get; set; } = null!;
 
         // Propiedades de navegación
-        public ICollection<TransactionLedger> Transacciones { get; set; } = new List<TransactionLedger>();
+        public ICollection<TransactionLedger> Transactions { get; set; }
     }
 }
