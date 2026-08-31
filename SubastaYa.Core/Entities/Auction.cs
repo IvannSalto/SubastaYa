@@ -1,22 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace SubastaYa.Core.Entities
 {
+    [Table("Auctions")]
     public class Auction
     {
+        [Key]
         public int Id { get; set; }
+        
+        [Required]
         public int Seller {  get; set; }
-        public int Category {  get; set; }
+        
+        [Required]
+        public int CategoryId {  get; set; }
+        
+        [Required]
+        [MaxLength(200)]
         public string Title { get; set; }
+        
+        [Required]
         public string Description { get; set; }
+        
+        [Url]
         public string Url_image { get; set; }
+        
+        [Column(TypeName = "decimal(18,2)")]
         public double BasePrice { get; set; }
+        
+        [Column(TypeName = "decimal(18,2)")]
         public double MinimumIncrement {  get; set; }
+        
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        
+        [Required]
+        [MaxLength(20)]
         public String state { get; set; }
+        
+        [ForeignKey("CategoryId")]
         public int Version { get; set; }
+        
+        public ICollection<Bid> Bids { get; set; }
     }
 }
