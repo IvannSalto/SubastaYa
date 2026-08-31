@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SubastaYa.Core.Entities
 {
-    internal class Bid
+    public class Bid
     {
         public int Id { get; set; }
         public int SubastaId { get; set; }
