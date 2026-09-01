@@ -5,8 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SubastaYa.Core.Entities
 {
+    [Table("Users")]
     public class User
     {
+        [Key]
         public int Id {  get; set; }
         
         [Required]
@@ -25,7 +27,7 @@ namespace SubastaYa.Core.Entities
 
         // Navigation properties (Relationships)
         public Wallet Wallet { get; set; }
-        public ICollection<Auction> publishedAuctions { get; set; }
-        public ICollection<Bid> bidsPlaced { get; set; } 
+        public ICollection<Auction> PublishedAuctions { get; set; }
+        public ICollection<Bid> BidsPlaced { get; set; } 
     }
 }

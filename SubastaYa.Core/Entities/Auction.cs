@@ -26,23 +26,25 @@ namespace SubastaYa.Core.Entities
         public string Description { get; set; }
         
         [Url]
-        public string Url_image { get; set; }
+        public string UrlImage { get; set; }
         
         [Column(TypeName = "decimal(18,2)")]
-        public double BasePrice { get; set; }
+        public decimal BasePrice { get; set; }
         
         [Column(TypeName = "decimal(18,2)")]
-        public double MinimumIncrement {  get; set; }
+        public decimal MinimumIncrement {  get; set; }
         
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         
         [Required]
         [MaxLength(20)]
-        public String state { get; set; }
+        public String State { get; set; }
         
-        [ForeignKey("CategoryId")]
+        [ConcurrencyCheck]
         public int Version { get; set; }
+        
+        public Category Category { get; set; }
         
         public ICollection<Bid> Bids { get; set; }
     }

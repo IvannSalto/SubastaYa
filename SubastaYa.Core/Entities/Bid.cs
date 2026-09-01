@@ -19,7 +19,7 @@ namespace SubastaYa.Core.Entities
         public int BuyerId { get; set; }
         
         [Column(TypeName = "decimal(18,2)")]
-        public decimal amount { get; set; }
+        public decimal Amount { get; set; }
         
         public DateTime BidDate { get; set; }
         

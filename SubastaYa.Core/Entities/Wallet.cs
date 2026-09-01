@@ -6,20 +6,23 @@ using System.Text;
 
 namespace SubastaYa.Core.Entities
 {
+    [Table("Wallets")]
     public class Wallet
     {
         [Key]
         public int Id { get; set; }
-        public User UserID { get; set; }
+        
+        [Required]
+        public int UserId { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
-        public double TotalBalance {  get; set; }
+        public decimal TotalBalance {  get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
-        public double BalanceHeld { get; set; }
+        public decimal BalanceHeld { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
-        public double AvailableBalance { get; set; }
+        public decimal AvailableBalance { get; set; }
 
         [ConcurrencyCheck]
         public int Version { get; set;}

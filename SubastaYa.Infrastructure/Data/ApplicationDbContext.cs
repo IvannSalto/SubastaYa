@@ -18,4 +18,21 @@ public class ApplicationDbContext : DbContext
     public DbSet<TransactionLedger> TransactionLedgers { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
     
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Bid>()
+            .HasOne(b => b.Auction)
+            .WithMany(a => a.Bids)
+            .HasForeignKey(b => b.AuctionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Bid>()
+            .HasOne(b => b.Buyer)
+            .WithMany(u => u.BidsPlaced) 
+            .HasForeignKey(b => b.BuyerId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
 }
