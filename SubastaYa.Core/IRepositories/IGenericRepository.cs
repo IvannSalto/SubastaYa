@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace SubastaYa.Infrastructure.Repositories
+namespace SubastaYa.Core.IRepositories
 {
-    public interface IRepository<T> where T : class 
+    public interface IGenericRepository<T> where T : class 
     {
         Task<T?> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
