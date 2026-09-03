@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SubastaYa.Core.Entities
+namespace SubastaYa.Infrastructure.Repositories
 {
-    internal class TransaccionLedger
+    internal class GenericRepository
     {
     }
 }
