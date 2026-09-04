@@ -5,45 +5,14 @@ using SubastaYa.Infrastructure.Data;
 
 namespace SubastaYa.Infrastructure.Repositories;
 
-public class AuctionRepository : IAuctionRepository
+public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
 {
     private readonly ApplicationDbContext _context;
 
-    public AuctionRepository(ApplicationDbContext context)
+    public AuctionRepository(ApplicationDbContext context) : base(context)
     {
-        _context = context;
     }
-
-    public async Task<Auction?> GetByIdAsync(int id)
-    {
-        return await _context.Auctions
-            .Include(a => a.Category)
-            .Include(a => a.Bids)
-                .ThenInclude(b => b.Buyer)
-            .FirstOrDefaultAsync(a => a.Id == id);
-    }
-
-    public async Task<IEnumerable<Auction>> GetAllAsync()
-    {
-        return await _context.Auctions
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
-    public async Task AddAsync(Auction entity)
-    {
-        await _context.Auctions.AddAsync(entity);
-    }
-
-    public void Update(Auction entity)
-    {
-        _context.Auctions.Update(entity);
-    }
-
-    public void Delete(Auction entity)
-    {
-        _context.Auctions.Remove(entity);
-    }
+    
 
     public async Task SaveChangesAsync()
     {

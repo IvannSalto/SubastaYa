@@ -24,6 +24,18 @@ public class WalletService : IWalletService
         
         return wallet;
     }
+    
+    public async Task<Wallet> GetWalletByUserIdAsync(int userId)
+    {
+        var wallet = await _walletRepo.GetByUserIdAsync(userId);
+    
+        if (wallet == null)
+        {
+            throw new InvalidOperationException("No se encontró una billetera para este usuario.");
+        }
+    
+        return wallet;
+    }
 
     public async Task RetainFundsAsync(int walletId, decimal amount)
     {

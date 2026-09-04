@@ -87,7 +87,7 @@ namespace SubastaYa.Services
 
             ApplyAntiSniping(auction);
 
-            _auctionRepository.Update(auction);
+            await _auctionRepository.UpdateAsync(auction);
 
             try
             {
@@ -137,7 +137,7 @@ namespace SubastaYa.Services
                 auction.WinnerId = null;
             }
 
-            _auctionRepository.Update(auction);
+            await _auctionRepository.UpdateAsync(auction);
             await _auctionRepository.SaveChangesAsync();
             return true;
         }

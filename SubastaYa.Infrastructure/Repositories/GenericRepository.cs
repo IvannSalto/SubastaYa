@@ -41,24 +41,20 @@ namespace SubastaYa.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new InvalidOperationException("Error de concurrencia.");
+                throw new InvalidOperationException("ConcurrencyConflict");
             }
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(T entity)
         {
-            var entity = await GetByIdAsync(id);
-            if (entity != null)
+            try
             {
-                try
-                {
-                    _dbSet.Remove(entity);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw new InvalidOperationException("Error de concurrencia.");
-                }
+                _dbSet.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new InvalidOperationException("ConcurrencyConflict");
             }
         }
     }
