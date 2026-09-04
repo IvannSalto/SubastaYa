@@ -13,7 +13,7 @@ namespace SubastaYa.Core.Entities
         public int Id { get; set; }
         
         [Required]
-        public int Seller {  get; set; }
+        public int SellerId {  get; set; }
         
         [Required]
         public int CategoryId {  get; set; }
@@ -36,7 +36,9 @@ namespace SubastaYa.Core.Entities
         
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        
+
+        public int? WinnerId { get; set; }
+
         [Required]
         [MaxLength(20)]
         public String State { get; set; }
