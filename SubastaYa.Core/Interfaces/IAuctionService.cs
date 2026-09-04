@@ -19,10 +19,7 @@ namespace SubastaYa.Core.Interfaces
 
         // Realizar una puja (valida monto, vendedor, concurrencia y aplica anti-sniping)
         Task<bool> PlaceBidAsync(int auctionId, int buyerId, decimal amount);
-
-        // Regla antisniping
-        // Extiende 2 minutos si entra una puja en los últimos 60 segundos
-        Task<bool> CheckAndApplyAntiSnipingAsync(int auctionId);
+        
 
         // Cierre automático de subasta
         Task<IEnumerable<Auction>> GetExpiredAuctionsAsync(); // Busca las subastas finalizadas
