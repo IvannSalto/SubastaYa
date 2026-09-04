@@ -23,7 +23,7 @@ public class AuctionRepository : IAuctionRepository
             .FirstOrDefaultAsync(a => a.Id == id);
     }
 
-    public async Task<IReadOnlyList<Auction>> GetAllAsync()
+    public async Task<IEnumerable<Auction>> GetAllAsync()
     {
         return await _context.Auctions
             .AsNoTracking()

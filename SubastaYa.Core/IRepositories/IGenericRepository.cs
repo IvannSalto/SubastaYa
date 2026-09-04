@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SubastaYa.Infrastructure.Repositories
+namespace SubastaYa.Core.IRepositories
 {
-    public interface IRepository<T> where T : class 
+    public interface IGenericRepository<T> where T : class 
     {
         Task<T?> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
         Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task DeleteAsync(int id);
+        void Update(T entity);
+        void Delete(T entity);
     }
 }

@@ -1,9 +1,13 @@
 ﻿using SubastaYa.Core.Entities;
-
-namespace SubastaYa.Core.IRepositories;
+using SubastaYa.Core.IRepositories;
 
 public interface IAuctionRepository : IGenericRepository<Auction>
 {
+    // agrega estos métodos genéricos básicos que necesita el servicio:
+    Task<Auction?> GetByIdAsync(int id);
+    Task AddAsync(Auction auction);
+    void Update(Auction auction); 
+
     Task<IEnumerable<Auction>> GetActiveAsync();
     Task<IEnumerable<Auction>> GetFilteredAsync(string? state, int? categoryId, string? sortBy);
     Task<IEnumerable<Auction>> GetExpiredAsync();
