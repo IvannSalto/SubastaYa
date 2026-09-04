@@ -14,9 +14,8 @@ namespace SubastaYa.Core.Entities
         
         [Required]
         public int UserId { get; set; }
-
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal TotalBalance {  get; set; }
+        
+        public decimal TotalBalance => AvailableBalance + BalanceHeld;
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal BalanceHeld { get; set; }
@@ -25,7 +24,7 @@ namespace SubastaYa.Core.Entities
         public decimal AvailableBalance { get; set; }
 
         [ConcurrencyCheck]
-        public int Version { get; set;}
+        public Guid Version { get; set; } = Guid.NewGuid();
 
         // Clave foránea y relación 1 a 1 con User
         [ForeignKey("UserId")]

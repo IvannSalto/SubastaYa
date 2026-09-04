@@ -34,8 +34,15 @@ namespace SubastaYa.Infrastructure.Repositories
 
         public async Task UpdateAsync(T entity)
         {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _dbSet.Update(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new InvalidOperationException("Error de concurrencia.");
+            }
         }
 
         public async Task DeleteAsync(int id)
@@ -43,8 +50,15 @@ namespace SubastaYa.Infrastructure.Repositories
             var entity = await GetByIdAsync(id);
             if (entity != null)
             {
-                _dbSet.Remove(entity);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _dbSet.Remove(entity);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw new InvalidOperationException("Error de concurrencia.");
+                }
             }
         }
     }
