@@ -1,15 +1,13 @@
-using Microsoft.EntityFrameworkCore;
-using SubastaYa.Infrastructure.Data;
-using SubastaYa.Core.IRepositories;
-using SubastaYa.Infrastructure.Repositories;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SubastaYa.Api.Middlewares;
 using SubastaYa.Core.Interfaces;
+using SubastaYa.Core.IRepositories;
+using SubastaYa.Infrastructure.Data;
+using SubastaYa.Infrastructure.Repositories;
 using SubastaYa.Services;
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -21,6 +19,10 @@ builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+
+
+
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
@@ -68,6 +70,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+
 app.UseHttpsRedirection();
 
 var summaries = new[]
@@ -89,10 +92,6 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers(); 
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
