@@ -3,7 +3,7 @@ using SubastaYa.Core.Entities;
 using SubastaYa.Core.Interfaces;
 using SubastaYa.Core.IRepositories;
 
-namespace SubastaYa.Core.Services;
+namespace SubastaYa.Services.Services;
 
 public class WalletService : IWalletService
 {

@@ -11,6 +11,7 @@ public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
 
     public AuctionRepository(ApplicationDbContext context) : base(context)
     {
+        _context = context;
     }
     
 

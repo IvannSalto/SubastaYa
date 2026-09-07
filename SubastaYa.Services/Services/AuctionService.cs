@@ -61,7 +61,7 @@ namespace SubastaYa.Services
 
             if (amount < minRequiredAmount)
                 throw new InvalidOperationException($"El monto debe ser de al menos ${minRequiredAmount}.");
-
+            
             var buyerWallet = await _walletService.GetWalletByUserIdAsync(buyerId); //Delego la tarea a wallet, eso lo va a manejar walletService
             await _walletService.RetainFundsAsync(buyerWallet.Id, amount);
             
