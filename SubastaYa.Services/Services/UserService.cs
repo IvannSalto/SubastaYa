@@ -35,8 +35,8 @@ namespace SubastaYa.Services
 
             user.Wallet = new Wallet // cuando creamos el usuario, nace con su billetera
             {
-                AvailableBalance = 0,
-                BalanceHeld = 0
+                BalanceHeld = 0,
+                AvailableBalance = 0
             };
 
             await _userRepository.AddAsync(user);

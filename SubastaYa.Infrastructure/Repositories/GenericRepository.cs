@@ -13,7 +13,7 @@ namespace SubastaYa.Infrastructure.Repositories
         
         public GenericRepository(ApplicationDbContext context)
         {
-            _context = _context;
+            _context = context;
             _dbSet = context.Set<T>();
         }
         public async Task<T?> GetByIdAsync(int id)
