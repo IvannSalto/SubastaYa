@@ -5,6 +5,7 @@ using SubastaYa.Core.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using SubastaYa.API.DTOs;
+using SubastaYa.Api.Extensions;
 
 namespace SubastaYa.API.Controllers
 {
@@ -50,14 +51,15 @@ namespace SubastaYa.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAuctionRequest request)
         {
-            // Mapeamos lo que llega del JSON a tu entidad real
+            int sellerId = User.GetUserId(); //se extrae el id del mismo t oken
+            
             var auction = new Auction
             {
                 Title = request.Title,
                 Description = request.Description,
                 BasePrice = request.BasePrice,
                 EndDate = request.EndDate,
-                SellerId = request.SellerId,
+                SellerId = sellerId,
                 UrlImage = request.UrlImage,
                 CategoryId = request.CategoryId,
                 
@@ -75,16 +77,19 @@ namespace SubastaYa.API.Controllers
         [HttpPost("{auctionId}/bid")]
         public async Task<IActionResult> PlaceBid(int auctionId, [FromBody] BidRequest request)
         {
+            int buyerId = User.GetUserId();
+            
             // motor financiero
-            await _auctionService.PlaceBidAsync(auctionId, request.BuyerId, request.Amount);
+            await _auctionService.PlaceBidAsync(auctionId, buyerId, request.Amount);
             return Ok(ApiResponse<object>.Ok(null, "Puja realizada con éxito. El dinero fue retenido."));
         }
 
         [HttpPost("{auctionId}/close")]
         public async Task<IActionResult> CloseAuction(int auctionId)
         {
+            int currentUserId = User.GetUserId();
             // descontamos al ganador, pagamos al vendedor
-            await _auctionService.ProcessAuctionClosureAsync(auctionId);
+            await _auctionService.ProcessAuctionClosureAsync(auctionId, currentUserId);
             return Ok(ApiResponse<object>.Ok(null, "Subasta cerrada. Fondos transferidos correctamente."));
         }
     }

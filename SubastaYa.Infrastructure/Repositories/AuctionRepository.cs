@@ -80,4 +80,11 @@ public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
             .OrderByDescending(a => a.EndDate)
             .ToListAsync();
     }
+    
+    public async Task<Auction> GetByIdWithBidsAsync(int auctionId)
+    {
+        return await _context.Auctions
+            .Include(a => a.Bids)
+            .FirstOrDefaultAsync(a => a.Id == auctionId);
+    }
 }

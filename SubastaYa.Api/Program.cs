@@ -91,5 +91,22 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//---- Seeder---------
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        await SubastaYa.Infrastructure.Seeders.DbSeeder.SeedAsync(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocurrió un error sembrando los datos a la base de datos.");
+    }
+}
+//--------------------------
+
 app.Run();
 
