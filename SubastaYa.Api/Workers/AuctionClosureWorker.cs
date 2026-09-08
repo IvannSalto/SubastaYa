@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SubastaYa.Core.Interfaces;
+using SubastaYa.Core.Utils;
 using SubastaYa.Infrastructure.Data;
 
 namespace SubastaYa.Api.Workers
@@ -45,7 +46,7 @@ namespace SubastaYa.Api.Workers
 
             // Buscamos todas las subastas Activas cuya fecha de fin ya paso
             var expiredAuctionsIds = await dbContext.Auctions
-                .Where(a => a.State == "Active" && a.EndDate <= DateTime.UtcNow)
+                .Where(a => a.State == "Active" && a.EndDate <= ArgTime.Now)
                 .Select(a => a.Id)
                 .ToListAsync();
 

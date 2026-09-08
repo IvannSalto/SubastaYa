@@ -2,6 +2,7 @@ using System.Data;
 using SubastaYa.Core.Entities;
 using SubastaYa.Core.Interfaces;
 using SubastaYa.Core.IRepositories;
+using SubastaYa.Core.Utils;
 
 namespace SubastaYa.Services.Services;
 
@@ -9,10 +10,12 @@ public class WalletService : IWalletService
 {
     
     private readonly IWalletRepository _walletRepo;
+    private readonly ITransactionLedgerRepository _ledgerRepo;
 
-    public WalletService(IWalletRepository walletRepo)
+    public WalletService(IWalletRepository walletRepo, ITransactionLedgerRepository ledgerRepo)
     {
         _walletRepo = walletRepo;
+        _ledgerRepo = ledgerRepo;
     }
     public async Task<Wallet> GetWalletAsync(int walletId)
     {
@@ -37,7 +40,7 @@ public class WalletService : IWalletService
         return wallet;
     }
 
-    public async Task RetainFundsAsync(int walletId, decimal amount)
+    public async Task RetainFundsAsync(int walletId, decimal amount, int? auctionId = null)
     {
         if (amount < 0)
             throw new ArgumentException("El saldo a retener debe ser mayor a 0");
@@ -52,10 +55,12 @@ public class WalletService : IWalletService
         
         wallet.AvailableBalance -= amount;
         wallet.BalanceHeld += amount;
+        
         await UpdateWalletAsync(wallet);
+        await RecordLedgerEntryAsync(walletId, "Retención por Puja", amount, auctionId);
     }
 
-    public async Task ReleaseFundsAsync(int walletId, decimal amount)
+    public async Task ReleaseFundsAsync(int walletId, decimal amount, int? auctionId = null)
     { 
         if (amount <= 0)
             throw new ArgumentException("El monto a liberar debe ser mayor a cero.");
@@ -69,10 +74,12 @@ public class WalletService : IWalletService
 
         wallet.BalanceHeld -= amount;
         wallet.AvailableBalance += amount;
+        
         await UpdateWalletAsync(wallet);
+        await RecordLedgerEntryAsync(walletId, "Liberación de Puja", amount, auctionId);
     }
 
-    public async Task DeductFundsAsync(int walletId, decimal amount)
+    public async Task DeductFundsAsync(int walletId, decimal amount, int? auctionId = null)
     {
         if (amount <= 0)
             throw new ArgumentException("El monto a descontar debe ser mayor a cero.");
@@ -85,10 +92,12 @@ public class WalletService : IWalletService
         }
 
         wallet.BalanceHeld -= amount;
+        
         await UpdateWalletAsync(wallet);
+        await RecordLedgerEntryAsync(walletId, "Cobro de Subasta", amount, auctionId);
     }
 
-    public async Task DepositFundsAsync(int walletId, decimal amount)
+    public async Task DepositFundsAsync(int walletId, decimal amount, int? auctionId = null)
     {
         if(amount <= 0 )
             throw new ArgumentException("El monto a depositar debe ser mayor a cero.");
@@ -99,7 +108,9 @@ public class WalletService : IWalletService
             throw new KeyNotFoundException("Wallet no encontrada.");
         
         wallet.AvailableBalance += amount;
+        
         await UpdateWalletAsync(wallet);
+        await RecordLedgerEntryAsync(walletId, "Pago por Subasta Vendida", amount, auctionId);
     }
 
     public async Task WithdrawFundsAsync(int walletId, decimal amount)
@@ -116,7 +127,9 @@ public class WalletService : IWalletService
             throw new InvalidOperationException("El monto a retirar excede tu saldo actual, probá con otro importe.");
         
         wallet.AvailableBalance -= amount;
+        
         await UpdateWalletAsync(wallet);
+        await RecordLedgerEntryAsync(walletId, "Retiro de Fondos", amount, null);
     }
 
     private async Task UpdateWalletAsync(Wallet wallet) //metodo para controlar las concurrencias y los posibles doble click... DRY
@@ -131,5 +144,19 @@ public class WalletService : IWalletService
         {
             throw new Exception("Error procesando la transacción: múltiples operaciones simultáneas. Intentá de nuevo.");
         }
+    }
+    
+    private async Task RecordLedgerEntryAsync(int walletId, string type, decimal amount, int? auctionId)
+    {
+        var ledgerEntry = new TransactionLedger
+        {
+            WalletId = walletId,
+            Type = type,
+            Amount = amount,
+            Date = ArgTime.Now,
+            AuctionId = auctionId
+        };
+
+        await _ledgerRepo.AddAsync(ledgerEntry);
     }
 }

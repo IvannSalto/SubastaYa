@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using SubastaYa.API.DTOs;
 using SubastaYa.Api.Extensions;
+using SubastaYa.Core.Utils;
 
 namespace SubastaYa.API.Controllers
 {
@@ -65,7 +66,7 @@ namespace SubastaYa.API.Controllers
                 
                 // rellenamos por default
                 MinimumIncrement = 1000, 
-                StartDate = DateTime.UtcNow,
+                StartDate = ArgTime.Now,
                 State = "Activa", 
                 Bids = new List<Bid>() 
             };
