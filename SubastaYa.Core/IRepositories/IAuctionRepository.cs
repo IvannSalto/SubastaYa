@@ -10,4 +10,5 @@ public interface IAuctionRepository : IGenericRepository<Auction>
     Task<IEnumerable<Auction>> GetBySellerAsync(int sellerId);
     Task<IEnumerable<Auction>> GetByBidderAsync(int buyerId);
     Task SaveChangesAsync();
+    Task<Auction> GetByIdWithBidsAsync(int auctionId);
 }

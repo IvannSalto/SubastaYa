@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using SubastaYa.Api.Responses;
 using SubastaYa.Core.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SubastaYa.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class WalletController : ControllerBase

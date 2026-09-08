@@ -42,7 +42,7 @@ namespace SubastaYa.Services
 
         public async Task<bool> PlaceBidAsync(int auctionId, int buyerId, decimal amount)
         {
-            var auction = await _auctionRepository.GetByIdAsync(auctionId);
+            var auction = await _auctionRepository.GetByIdWithBidsAsync(auctionId);
             
             // ----------------Validaciones------------------
             if (auction == null)
@@ -61,7 +61,7 @@ namespace SubastaYa.Services
 
             if (amount < minRequiredAmount)
                 throw new InvalidOperationException($"El monto debe ser de al menos ${minRequiredAmount}.");
-
+            
             var buyerWallet = await _walletService.GetWalletByUserIdAsync(buyerId); //Delego la tarea a wallet, eso lo va a manejar walletService
             await _walletService.RetainFundsAsync(buyerWallet.Id, amount);
             
@@ -106,9 +106,9 @@ namespace SubastaYa.Services
             return await _auctionRepository.GetExpiredAsync();
         }
 
-        public async Task<bool> ProcessAuctionClosureAsync(int auctionId)
+        public async Task<bool> ProcessAuctionClosureAsync(int auctionId, int currentUserId)
         {
-            var auction = await _auctionRepository.GetByIdAsync(auctionId);
+            var auction = await _auctionRepository.GetByIdWithBidsAsync(auctionId);
          
             if (auction == null)
                 throw new InvalidOperationException("La subasta no existe.");
@@ -116,6 +116,8 @@ namespace SubastaYa.Services
             if (auction.State == "Closed" || auction.State == "FinishedWithoutWinner")
                 throw new InvalidOperationException("La subasta ya se encuentra cerrada.");
             
+            if (auction.SellerId != currentUserId)
+                throw new UnauthorizedAccessException("Operación denegada: Solo el creador de la subasta puede cerrarla.");
 
             var highestBid = auction.Bids?
                 .OrderByDescending(b => b.Amount)
@@ -124,7 +126,7 @@ namespace SubastaYa.Services
             if (highestBid != null)
             {
                 auction.State = "Closed";
-                auction.WinnerId = highestBid.Buyer.Id;
+                auction.WinnerId = highestBid.BuyerId;
                 var winnerWallet = await _walletService.GetWalletByUserIdAsync(highestBid.BuyerId); //le cobramos al ganador
                 await _walletService.DeductFundsAsync(winnerWallet.Id, highestBid.Amount);
                 
@@ -133,7 +135,7 @@ namespace SubastaYa.Services
             }
             else
             {
-                auction.State = "FinishedWithoutWinner";
+                auction.State = "FinishedWithNoWinner";
                 auction.WinnerId = null;
             }
 

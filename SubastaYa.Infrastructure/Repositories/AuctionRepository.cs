@@ -11,6 +11,7 @@ public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
 
     public AuctionRepository(ApplicationDbContext context) : base(context)
     {
+        _context = context;
     }
     
 
@@ -78,5 +79,12 @@ public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
             .Where(a => a.Bids.Any(b => b.Buyer.Id == buyerId))
             .OrderByDescending(a => a.EndDate)
             .ToListAsync();
+    }
+    
+    public async Task<Auction> GetByIdWithBidsAsync(int auctionId)
+    {
+        return await _context.Auctions
+            .Include(a => a.Bids)
+            .FirstOrDefaultAsync(a => a.Id == auctionId);
     }
 }

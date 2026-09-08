@@ -36,7 +36,8 @@ namespace SubastaYa.Api.Middlewares
             {
                 ArgumentException => (int)HttpStatusCode.BadRequest,
                 InvalidOperationException => (int)HttpStatusCode.BadRequest,
-                _ => (int)HttpStatusCode.BadRequest 
+                UnauthorizedAccessException => (int)HttpStatusCode.Forbidden,
+                _ => (int)HttpStatusCode.InternalServerError           
             };
 
             
