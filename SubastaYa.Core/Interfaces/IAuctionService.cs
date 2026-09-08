@@ -25,7 +25,7 @@ namespace SubastaYa.Core.Interfaces
         Task<IEnumerable<Auction>> GetExpiredAuctionsAsync(); // Busca las subastas finalizadas
 
         // Cierra la subasta
-        Task<bool> ProcessAuctionClosureAsync(int auctionId, int currentUserId);
+        Task<bool> ProcessAuctionClosureAsync(int auctionId, int? currentUserId = null);
 
         // Panel de Usuario "Mis Actividades"
         Task<IEnumerable<Auction>> GetAuctionsBySellerAsync(int sellerId); // Muestra lo que el usuario pone en venta
