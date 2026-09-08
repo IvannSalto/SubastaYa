@@ -106,7 +106,7 @@ namespace SubastaYa.Services
             return await _auctionRepository.GetExpiredAsync();
         }
 
-        public async Task<bool> ProcessAuctionClosureAsync(int auctionId, int currentUserId)
+        public async Task<bool> ProcessAuctionClosureAsync(int auctionId, int? currentUserId = null)
         {
             var auction = await _auctionRepository.GetByIdWithBidsAsync(auctionId);
          
@@ -115,9 +115,9 @@ namespace SubastaYa.Services
 
             if (auction.State == "Closed" || auction.State == "FinishedWithoutWinner")
                 throw new InvalidOperationException("La subasta ya se encuentra cerrada.");
-            
-            if (auction.SellerId != currentUserId)
-                throw new UnauthorizedAccessException("Operación denegada: Solo el creador de la subasta puede cerrarla.");
+
+            if (currentUserId.HasValue && auction.SellerId != currentUserId.Value)
+                throw new UnauthorizedAccessException("Operación denegada: Solo el creador puede cerrarla.");
 
             var highestBid = auction.Bids?
                 .OrderByDescending(b => b.Amount)

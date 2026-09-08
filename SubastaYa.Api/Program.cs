@@ -69,7 +69,7 @@ builder.Services.AddScoped<IWalletService, WalletService>();
 
 builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
-
+builder.Services.AddHostedService<SubastaYa.Api.Workers.AuctionClosureWorker>();
 
 var app = builder.Build();
 
