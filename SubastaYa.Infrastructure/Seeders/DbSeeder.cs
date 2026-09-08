@@ -9,6 +9,7 @@ namespace SubastaYa.Infrastructure.Seeders
     {
         public static async Task SeedAsync(ApplicationDbContext context)
         {
+            await context.Database.EnsureDeletedAsync(); //comentarla en produccion
             await context.Database.MigrateAsync();
             
             context.Bids.RemoveRange(context.Bids);
@@ -58,19 +59,19 @@ namespace SubastaYa.Infrastructure.Seeders
             var subastas = new List<Auction>
             {
                 // Cierra en 25 min (Líder actual $45.000)
-                new Auction { Title = "Laptop Gamer", CategoryId = catTecno.Id, SellerId = vendedor.Id, BasePrice = 30000, MinimumIncrement = 1000, State = "Active", StartDate = DateTime.UtcNow.AddDays(-1), EndDate = DateTime.UtcNow.AddMinutes(25) },
+                new Auction { Title = "Laptop Gamer", Description = "Descripcion generica.", CategoryId = catTecno.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 30000, MinimumIncrement = 1000, State = "Active", StartDate = DateTime.UtcNow.AddDays(-1), EndDate = DateTime.UtcNow.AddMinutes(25) },
                 
                 // Cierra en 90 segundos (prueba antisnipig)
-                new Auction { Title = "Reloj Antiguo", CategoryId = catColec.Id, SellerId = vendedor.Id, BasePrice = 5000, MinimumIncrement = 500, State = "Active", StartDate = DateTime.UtcNow.AddDays(-1), EndDate = DateTime.UtcNow.AddSeconds(90) },
+                new Auction { Title = "Reloj Antiguo", Description = "Descripcion generica.", CategoryId = catColec.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 5000, MinimumIncrement = 500, State = "Active", StartDate = DateTime.UtcNow.AddDays(-1), EndDate = DateTime.UtcNow.AddSeconds(90) },
                 
                 // Inicio programado a +24 hs (Pujas bloqueadas)
-                new Auction { Title = "Zapatillas Limitadas", CategoryId = catIndum.Id, SellerId = vendedor.Id, BasePrice = 20000, MinimumIncrement = 1000, State = "Pending", StartDate = DateTime.UtcNow.AddHours(24), EndDate = DateTime.UtcNow.AddDays(3) },
+                new Auction { Title = "Zapatillas Limitadas", Description = "Descripcion generica.", CategoryId = catIndum.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 20000, MinimumIncrement = 1000, State = "Pending", StartDate = DateTime.UtcNow.AddHours(24), EndDate = DateTime.UtcNow.AddDays(3) },
                 
                 // Vencida con ganador: Fecha fin pasada + puja ganadora
-                new Auction { Title = "Auto Clásico", CategoryId = catVehic.Id, SellerId = vendedor.Id, BasePrice = 80000, MinimumIncrement = 5000, State = "Active", StartDate = DateTime.UtcNow.AddDays(-5), EndDate = DateTime.UtcNow.AddHours(-1) },
+                new Auction { Title = "Auto Clásico", Description = "Descripcion generica.", CategoryId = catVehic.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 80000, MinimumIncrement = 5000, State = "Active", StartDate = DateTime.UtcNow.AddDays(-5), EndDate = DateTime.UtcNow.AddHours(-1) },
                 
                 // Vencida desierta: fecha fin pasada sin pujas
-                new Auction { Title = "Camiseta Firmada", CategoryId = catColec.Id, SellerId = vendedor.Id, BasePrice = 150000, MinimumIncrement = 10000, State = "Active", StartDate = DateTime.UtcNow.AddDays(-5), EndDate = DateTime.UtcNow.AddHours(-2) }
+                new Auction { Title = "Camiseta Firmada", Description = "Descripcion generica.", CategoryId = catColec.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 150000, MinimumIncrement = 10000, State = "Active", StartDate = DateTime.UtcNow.AddDays(-5), EndDate = DateTime.UtcNow.AddHours(-2) }
             };
 
             await context.Auctions.AddRangeAsync(subastas);
