@@ -3,6 +3,7 @@ using SubastaYa.Core.Entities;
 using SubastaYa.Core.Interfaces;
 using SubastaYa.Core.IRepositories;
 using SubastaYa.Core.Utils;
+using System.Transactions; //la A de ACID
 
 namespace SubastaYa.Services.Services;
 
@@ -52,12 +53,17 @@ public class WalletService : IWalletService
 
         if (wallet.AvailableBalance < amount)
             throw new InvalidOperationException("Saldo disponible insuficiente.");
-        
-        wallet.AvailableBalance -= amount;
-        wallet.BalanceHeld += amount;
-        
-        await UpdateWalletAsync(wallet);
-        await RecordLedgerEntryAsync(walletId, "Retención por Puja", amount, auctionId);
+
+        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        {
+            wallet.AvailableBalance -= amount;
+            wallet.BalanceHeld += amount;
+
+            await UpdateWalletAsync(wallet);
+            await RecordLedgerEntryAsync(walletId, "Retención por Puja", amount, auctionId);
+            
+            transaction.Complete();
+        }
     }
 
     public async Task ReleaseFundsAsync(int walletId, decimal amount, int? auctionId = null)
@@ -72,11 +78,15 @@ public class WalletService : IWalletService
             throw new InvalidOperationException("No hay suficientes fondos retenidos para liberar.");
         }
 
-        wallet.BalanceHeld -= amount;
-        wallet.AvailableBalance += amount;
-        
-        await UpdateWalletAsync(wallet);
-        await RecordLedgerEntryAsync(walletId, "Liberación de Puja", amount, auctionId);
+        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        {
+            wallet.BalanceHeld -= amount;
+            wallet.AvailableBalance += amount;
+
+            await UpdateWalletAsync(wallet);
+            await RecordLedgerEntryAsync(walletId, "Liberación de Puja", amount, auctionId);
+            transaction.Complete();
+        }
     }
 
     public async Task DeductFundsAsync(int walletId, decimal amount, int? auctionId = null)
@@ -91,10 +101,15 @@ public class WalletService : IWalletService
             throw new InvalidOperationException("Fondos retenidos insuficientes para realizar el cobro.");
         }
 
-        wallet.BalanceHeld -= amount;
-        
-        await UpdateWalletAsync(wallet);
-        await RecordLedgerEntryAsync(walletId, "Cobro de Subasta", amount, auctionId);
+        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        {
+            wallet.BalanceHeld -= amount;
+
+            await UpdateWalletAsync(wallet);
+            await RecordLedgerEntryAsync(walletId, "Cobro de Subasta", amount, auctionId);
+            
+            transaction.Complete();
+        }
     }
 
     public async Task DepositFundsAsync(int walletId, decimal amount, int? auctionId = null)
@@ -106,11 +121,16 @@ public class WalletService : IWalletService
         
         if (wallet == null)
             throw new KeyNotFoundException("Wallet no encontrada.");
-        
-        wallet.AvailableBalance += amount;
-        
-        await UpdateWalletAsync(wallet);
-        await RecordLedgerEntryAsync(walletId, "Pago por Subasta Vendida", amount, auctionId);
+
+        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled)) //parametro obligatorio para sync
+        {
+            wallet.AvailableBalance += amount;
+
+            await UpdateWalletAsync(wallet);
+            await RecordLedgerEntryAsync(walletId, "Pago por Subasta Vendida", amount, auctionId);
+            
+            transaction.Complete();
+        }
     }
 
     public async Task WithdrawFundsAsync(int walletId, decimal amount)
@@ -125,11 +145,16 @@ public class WalletService : IWalletService
         
         if(amount > wallet.AvailableBalance)
             throw new InvalidOperationException("El monto a retirar excede tu saldo actual, probá con otro importe.");
-        
-        wallet.AvailableBalance -= amount;
-        
-        await UpdateWalletAsync(wallet);
-        await RecordLedgerEntryAsync(walletId, "Retiro de Fondos", amount, null);
+
+        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        {
+            wallet.AvailableBalance -= amount;
+
+            await UpdateWalletAsync(wallet);
+            await RecordLedgerEntryAsync(walletId, "Retiro de Fondos", amount, null);
+            
+            transaction.Complete();
+        }
     }
 
     private async Task UpdateWalletAsync(Wallet wallet) //metodo para controlar las concurrencias y los posibles doble click... DRY
