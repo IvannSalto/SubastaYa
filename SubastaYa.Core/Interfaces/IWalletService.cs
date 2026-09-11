@@ -8,13 +8,13 @@ public interface IWalletService
     
     Task<Wallet> GetWalletByUserIdAsync(int userId);
     
-    Task RetainFundsAsync(int walletId, decimal amount);
+    Task RetainFundsAsync(int walletId, decimal amount, int? auctionId = null);
 
-    Task ReleaseFundsAsync(int walletId, decimal amount);
+    Task ReleaseFundsAsync(int walletId, decimal amount, int? auctionId = null);
 
-    Task DeductFundsAsync(int walletId, decimal amount);
+    Task DeductFundsAsync(int walletId, decimal amount, int? auctionId = null);
     
-    Task DepositFundsAsync(int walletId, decimal amount);
+    Task DepositFundsAsync(int walletId, decimal amount, int? auctionId = null);
     
     Task WithdrawFundsAsync(int walletId, decimal amount);
 }

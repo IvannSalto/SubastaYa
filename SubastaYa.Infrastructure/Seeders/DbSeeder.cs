@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SubastaYa.Core.Entities;
 using SubastaYa.Infrastructure.Data;
 using BCrypt.Net;
+using SubastaYa.Core.Utils;
 
 namespace SubastaYa.Infrastructure.Seeders
 {
@@ -33,11 +34,11 @@ namespace SubastaYa.Infrastructure.Seeders
             // ------ Usuarios -------
             string hash = BCrypt.Net.BCrypt.HashPassword("123");
 
-            var vendedor = new User { Name = "Vendedor Test", Email = "vendedor@test.com", PasswordHash = hash, Created = DateTime.UtcNow };
-            var comprador1 = new User { Name = "Comprador Lider", Email = "comprador1@test.com", PasswordHash = hash, Created = DateTime.UtcNow };
-            var comprador2 = new User { Name = "Comprador Habilitado", Email = "comprador2@test.com", PasswordHash = hash, Created = DateTime.UtcNow };
-            var sinFondos = new User { Name = "Usuario Pobre", Email = "sinfondos@test.com", PasswordHash = hash, Created = DateTime.UtcNow };
-            var compradorDummy = new User { Name = "Comprador Extra", Email = "dummy@test.com", PasswordHash = hash, Created = DateTime.UtcNow }; // Para ganar la subasta vencida
+            var vendedor = new User { Name = "Vendedor Test", Email = "vendedor@test.com", PasswordHash = hash, Created = ArgTime.Now };
+            var comprador1 = new User { Name = "Comprador Lider", Email = "comprador1@test.com", PasswordHash = hash, Created = ArgTime.Now };
+            var comprador2 = new User { Name = "Comprador Habilitado", Email = "comprador2@test.com", PasswordHash = hash, Created = ArgTime.Now };
+            var sinFondos = new User { Name = "Usuario Pobre", Email = "sinfondos@test.com", PasswordHash = hash, Created = ArgTime.Now };
+            var compradorDummy = new User { Name = "Comprador Extra", Email = "dummy@test.com", PasswordHash = hash, Created = ArgTime.Now }; // Para ganar la subasta vencida
 
             await context.Users.AddRangeAsync(vendedor, comprador1, comprador2, sinFondos, compradorDummy);
             await context.SaveChangesAsync();
@@ -59,19 +60,19 @@ namespace SubastaYa.Infrastructure.Seeders
             var subastas = new List<Auction>
             {
                 // Cierra en 25 min (Líder actual $45.000)
-                new Auction { Title = "Laptop Gamer", Description = "Descripcion generica.", CategoryId = catTecno.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 30000, MinimumIncrement = 1000, State = "Active", StartDate = DateTime.UtcNow.AddDays(-1), EndDate = DateTime.UtcNow.AddMinutes(25) },
+                new Auction { Title = "Laptop Gamer", Description = "Descripcion generica.", CategoryId = catTecno.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 30000, MinimumIncrement = 1000, State = "Active", StartDate = ArgTime.Now.AddDays(-1), EndDate = ArgTime.Now.AddMinutes(25) },
                 
                 // Cierra en 90 segundos (prueba antisnipig)
-                new Auction { Title = "Reloj Antiguo", Description = "Descripcion generica.", CategoryId = catColec.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 5000, MinimumIncrement = 500, State = "Active", StartDate = DateTime.UtcNow.AddDays(-1), EndDate = DateTime.UtcNow.AddSeconds(90) },
+                new Auction { Title = "Reloj Antiguo", Description = "Descripcion generica.", CategoryId = catColec.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 5000, MinimumIncrement = 500, State = "Active", StartDate = ArgTime.Now.AddDays(-1), EndDate = ArgTime.Now.AddSeconds(90) },
                 
                 // Inicio programado a +24 hs (Pujas bloqueadas)
-                new Auction { Title = "Zapatillas Limitadas", Description = "Descripcion generica.", CategoryId = catIndum.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 20000, MinimumIncrement = 1000, State = "Pending", StartDate = DateTime.UtcNow.AddHours(24), EndDate = DateTime.UtcNow.AddDays(3) },
+                new Auction { Title = "Zapatillas Limitadas", Description = "Descripcion generica.", CategoryId = catIndum.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 20000, MinimumIncrement = 1000, State = "Pending", StartDate = ArgTime.Now.AddHours(24), EndDate = ArgTime.Now.AddDays(3) },
                 
                 // Vencida con ganador: Fecha fin pasada + puja ganadora
-                new Auction { Title = "Auto Clásico", Description = "Descripcion generica.", CategoryId = catVehic.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 80000, MinimumIncrement = 5000, State = "Active", StartDate = DateTime.UtcNow.AddDays(-5), EndDate = DateTime.UtcNow.AddHours(-1) },
+                new Auction { Title = "Auto Clásico", Description = "Descripcion generica.", CategoryId = catVehic.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 80000, MinimumIncrement = 5000, State = "Active", StartDate = ArgTime.Now.AddDays(-5), EndDate = ArgTime.Now.AddHours(-1) },
                 
                 // Vencida desierta: fecha fin pasada sin pujas
-                new Auction { Title = "Camiseta Firmada", Description = "Descripcion generica.", CategoryId = catColec.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 150000, MinimumIncrement = 10000, State = "Active", StartDate = DateTime.UtcNow.AddDays(-5), EndDate = DateTime.UtcNow.AddHours(-2) }
+                new Auction { Title = "Camiseta Firmada", Description = "Descripcion generica.", CategoryId = catColec.Id, UrlImage = "https://picsum.photos/800/600", SellerId = vendedor.Id, BasePrice = 150000, MinimumIncrement = 10000, State = "Active", StartDate = ArgTime.Now.AddDays(-5), EndDate = ArgTime.Now.AddHours(-2) }
             };
 
             await context.Auctions.AddRangeAsync(subastas);
@@ -81,14 +82,29 @@ namespace SubastaYa.Infrastructure.Seeders
             var bids = new List<Bid>
             {
                 // Historial de 2 ofertas en la Subasta "Activa Estándar"
-                new Bid { AuctionId = subastas[0].Id, BuyerId = comprador2.Id, Amount = 35000, BidDate = DateTime.UtcNow.AddMinutes(-30) }, // Puja antigua
-                new Bid { AuctionId = subastas[0].Id, BuyerId = comprador1.Id, Amount = 45000, BidDate = DateTime.UtcNow.AddMinutes(-5) },  // Puja líder que retiene los 45k
+                new Bid { AuctionId = subastas[0].Id, BuyerId = comprador2.Id, Amount = 35000, BidDate = ArgTime.Now.AddMinutes(-30) }, // Puja antigua
+                new Bid { AuctionId = subastas[0].Id, BuyerId = comprador1.Id, Amount = 45000, BidDate = ArgTime.Now.AddMinutes(-5) },  // Puja líder que retiene los 45k
 
                 // Oferta ganadora en la Subasta "Vencida con ganador"
-                new Bid { AuctionId = subastas[3].Id, BuyerId = compradorDummy.Id, Amount = 100000, BidDate = DateTime.UtcNow.AddHours(-2) }
+                new Bid { AuctionId = subastas[3].Id, BuyerId = compradorDummy.Id, Amount = 100000, BidDate = ArgTime.Now.AddHours(-2) }
             };
 
             await context.Bids.AddRangeAsync(bids);
+            await context.SaveChangesAsync();
+            
+            //------ Registros -----------
+            var transacciones = new List<TransactionLedger>
+            {
+                new TransactionLedger { WalletId = wallets[1].Id, Type = "Fondeo Inicial", Amount = 150000, Date = ArgTime.Now.AddDays(-2) },
+                new TransactionLedger { WalletId = wallets[2].Id, Type = "Fondeo Inicial", Amount = 200000, Date = ArgTime.Now.AddDays(-2) },
+                new TransactionLedger { WalletId = wallets[3].Id, Type = "Fondeo Inicial", Amount = 500, Date = ArgTime.Now.AddDays(-2) },
+                new TransactionLedger { WalletId = wallets[4].Id, Type = "Fondeo Inicial", Amount = 100000, Date = ArgTime.Now.AddDays(-2) },
+
+                new TransactionLedger { WalletId = wallets[1].Id, Type = "Retención de Puja", Amount = 45000, Date = bids[1].BidDate, AuctionId = subastas[0].Id },
+                new TransactionLedger { WalletId = wallets[4].Id, Type = "Retención de Puja", Amount = 100000, Date = bids[2].BidDate, AuctionId = subastas[3].Id }
+            };
+
+            await context.TransactionLedgers.AddRangeAsync(transacciones);
             await context.SaveChangesAsync();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using SubastaYa.Core.Entities;
 using SubastaYa.Core.Interfaces;
+using SubastaYa.Core.Utils;
 
 namespace SubastaYa.Services
 {
@@ -32,7 +33,7 @@ namespace SubastaYa.Services
         public async Task<Auction> CreateAuctionAsync(Auction auction)
         {
             auction.State = "Active";
-            auction.StartDate = DateTime.UtcNow;
+            auction.StartDate = ArgTime.Now;
 
             await _auctionRepository.AddAsync(auction);
             await _auctionRepository.SaveChangesAsync();
@@ -48,7 +49,7 @@ namespace SubastaYa.Services
             if (auction == null)
                 throw new InvalidOperationException("La subasta no existe.");
 
-            if (auction.State != "Active" || auction.EndDate <= DateTime.UtcNow)
+            if (auction.State != "Active" || auction.EndDate <= ArgTime.Now)
                 throw new InvalidOperationException("La subasta ya no se encuentra activa.");
 
             if (auction.SellerId == buyerId)
@@ -63,12 +64,12 @@ namespace SubastaYa.Services
                 throw new InvalidOperationException($"El monto debe ser de al menos ${minRequiredAmount}.");
             
             var buyerWallet = await _walletService.GetWalletByUserIdAsync(buyerId); //Delego la tarea a wallet, eso lo va a manejar walletService
-            await _walletService.RetainFundsAsync(buyerWallet.Id, amount);
+            await _walletService.RetainFundsAsync(buyerWallet.Id, amount, auctionId);
             
             if (highestBid != null) // si ya habia un buyer antes, le devolvemos la plata retenida
             {
                 var previousBidderWallet = await _walletService.GetWalletByUserIdAsync(highestBid.BuyerId);
-                await _walletService.ReleaseFundsAsync(previousBidderWallet.Id, highestBid.Amount);
+                await _walletService.ReleaseFundsAsync(previousBidderWallet.Id, highestBid.Amount, auctionId);
             }
             
             var newBid = new Bid
@@ -76,7 +77,7 @@ namespace SubastaYa.Services
                 AuctionId = auctionId,
                 BuyerId = buyerId,
                 Amount = amount,
-                BidDate = DateTime.UtcNow
+                BidDate = ArgTime.Now
             };
 
             if (auction.Bids == null)
@@ -96,7 +97,7 @@ namespace SubastaYa.Services
             }
             catch (InvalidOperationException ex) when (ex.Message == "ConcurrencyConflict")
             {
-                await _walletService.ReleaseFundsAsync(buyerWallet.Id, amount); //si hubo un error de concurrencia le devolvemos la plata
+                await _walletService.ReleaseFundsAsync(buyerWallet.Id, amount, auctionId); //si hubo un error de concurrencia le devolvemos la plata
                 throw new Exception("Otra persona realizó una puja en el mismo milisegundo. Tu saldo fue devuelto, intentá de nuevo.");
             }
         }
@@ -128,10 +129,10 @@ namespace SubastaYa.Services
                 auction.State = "Closed";
                 auction.WinnerId = highestBid.BuyerId;
                 var winnerWallet = await _walletService.GetWalletByUserIdAsync(highestBid.BuyerId); //le cobramos al ganador
-                await _walletService.DeductFundsAsync(winnerWallet.Id, highestBid.Amount);
+                await _walletService.DeductFundsAsync(winnerWallet.Id, highestBid.Amount, auctionId);
                 
                 var sellerWallet = await _walletService.GetWalletByUserIdAsync(auction.SellerId); //le pagamos al vendedor
-                await _walletService.DepositFundsAsync(sellerWallet.Id, highestBid.Amount);
+                await _walletService.DepositFundsAsync(sellerWallet.Id, highestBid.Amount, auctionId);
             }
             else
             {
@@ -156,7 +157,7 @@ namespace SubastaYa.Services
         
         private void ApplyAntiSniping(Auction auction)
         {
-            var timeRemaining = auction.EndDate - DateTime.UtcNow;
+            var timeRemaining = auction.EndDate - ArgTime.Now;
             if (timeRemaining.TotalSeconds > 0 && timeRemaining.TotalSeconds <= 60)
             {
                 auction.EndDate = auction.EndDate.AddMinutes(2);

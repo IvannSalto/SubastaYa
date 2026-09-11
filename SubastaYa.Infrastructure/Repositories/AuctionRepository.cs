@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SubastaYa.Core.Entities;
 using SubastaYa.Core.IRepositories;
+using SubastaYa.Core.Utils;
 using SubastaYa.Infrastructure.Data;
 
 namespace SubastaYa.Infrastructure.Repositories;
@@ -24,7 +25,7 @@ public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
     {
         return await _context.Auctions
             .AsNoTracking()
-            .Where(a => a.State == "Active" && a.EndDate > DateTime.UtcNow)
+            .Where(a => a.State == "Active" && a.EndDate > ArgTime.Now)
             .OrderBy(a => a.EndDate)
             .ToListAsync();
     }
@@ -59,7 +60,7 @@ public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
     {
         return await _context.Auctions
             .Include(a => a.Bids)
-            .Where(a => a.State == "Active" && a.EndDate <= DateTime.UtcNow)
+            .Where(a => a.State == "Active" && a.EndDate <= ArgTime.Now)
             .ToListAsync();
     }
 
