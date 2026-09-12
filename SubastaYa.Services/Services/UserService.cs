@@ -41,6 +41,7 @@ namespace SubastaYa.Services
             };
 
             await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
             return user;
         }
 
