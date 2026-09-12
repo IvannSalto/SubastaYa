@@ -74,6 +74,8 @@ builder.Services.AddScoped<ITransactionLedgerRepository, TransactionLedgerReposi
 
 builder.Services.AddHostedService<SubastaYa.Api.Workers.AuctionClosureWorker>();
 
+builder.Services.AddScoped<IAuditService, AuditService>();
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();

@@ -8,11 +8,12 @@ namespace SubastaYa.Services
     {
         private readonly IAuctionRepository _auctionRepository;
         private readonly IWalletService _walletService;
-
-        public AuctionService(IAuctionRepository auctionRepository, IWalletService wallerService)
+        private readonly IAuditService _auditService;
+        public AuctionService(IAuctionRepository auctionRepository, IWalletService wallerService, IAuditService auditService)
         {
             _auctionRepository = auctionRepository;
             _walletService = wallerService;
+            _auditService = auditService;
         }
 
         public async Task<Auction?> GetByIdAsync(int id)
@@ -38,6 +39,20 @@ namespace SubastaYa.Services
             await _auctionRepository.AddAsync(auction);
             await _auctionRepository.SaveChangesAsync();
 
+            //Crea auditoria al crear la subasta
+            await _auditService.RegisterLogAsync(
+                entity: nameof(Auction),
+                entityId: auction.Id,
+                action: "Create",
+                userId: auction.SellerId,
+                detail: new
+                {
+                    auction.Title,
+                    auction.BasePrice,
+                    auction.MinimumIncrement,
+                    auction.EndDate
+                }
+            );
             return auction;
         }
 
@@ -93,6 +108,20 @@ namespace SubastaYa.Services
             try
             {
                 await _auctionRepository.SaveChangesAsync();
+                //registra auditoria al realizar una puja exitosa
+                await _auditService.RegisterLogAsync(
+                    entity: nameof(Auction),
+                    entityId: auctionId,
+                    action: "PlaceBid",
+                    userId: buyerId,
+                    detail: new
+                    {
+                        BidAmount = amount,
+                        PreviousHighestBid = highestBid?.Amount,
+                        NewEndDate = auction.EndDate
+                    }
+                );
+
                 return true;
             }
             catch (InvalidOperationException ex) when (ex.Message == "ConcurrencyConflict")
@@ -142,6 +171,20 @@ namespace SubastaYa.Services
 
             await _auctionRepository.UpdateAsync(auction);
             await _auctionRepository.SaveChangesAsync();
+
+            //Registra auditoria al cerrar una subasta
+            await _auditService.RegisterLogAsync(
+                entity: nameof(Auction),
+                entityId: auctionId,
+                action: "Close",
+                userId: currentUserId ?? auction.SellerId,
+                detail: new
+                {
+                    FinalState = auction.State,
+                    WinnerId = auction.WinnerId,
+                    WinningAmount = highestBid?.Amount
+                }
+            );
             return true;
         }
 
