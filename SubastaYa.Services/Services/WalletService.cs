@@ -14,11 +14,10 @@ public class WalletService : IWalletService
     private readonly ITransactionLedgerRepository _ledgerRepo;
     private readonly IAuditService _auditService;
 
-    public WalletService(IWalletRepository walletRepo, ITransactionLedgerRepository ledgerRepo, IAuditService auditService)
+    public WalletService(IWalletRepository walletRepo, ITransactionLedgerRepository ledgerRepo)
     {
         _walletRepo = walletRepo;
         _ledgerRepo = ledgerRepo;
-        _auditService = auditService;
     }
     public async Task<Wallet> GetWalletAsync(int walletId)
     {
@@ -64,13 +63,7 @@ public class WalletService : IWalletService
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Retención por Puja", amount, auctionId);
 
-            await _auditService.RegisterLogAsync(
-                entity: "BILLETERA",
-                entityId: walletId,
-                action: "RETENCION_PUJA",
-                userId: wallet.UserId,
-                detail: new { Amount = amount, AuctionId = auctionId, RemainingBalance = wallet.TotalBalance }
-            );
+           
             transaction.Complete();
         }
     }
@@ -95,13 +88,6 @@ public class WalletService : IWalletService
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Liberación de Puja", amount, auctionId);
 
-            await _auditService.RegisterLogAsync(
-                entity: "BILLETERA",
-                entityId: walletId,
-                action: "LIBERACION_PUJA",
-                userId: wallet.UserId,
-                detail: new { Amount = amount, AuctionId = auctionId, RestoredBalance = wallet.TotalBalance }
-            );
             transaction.Complete();
         }
     }
@@ -124,15 +110,7 @@ public class WalletService : IWalletService
 
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Cobro de Subasta", amount, auctionId);
-            
-            // audita el cobro tras ganar subasta
-            await _auditService.RegisterLogAsync(
-                entity: "BILLETERA",
-                entityId: walletId,
-                action: "COBRO_SUBASTA_GANADA",
-                userId: wallet.UserId,
-                detail: new { Amount = amount, AuctionId = auctionId }
-            );
+                    
             transaction.Complete();
         }
     }
@@ -154,18 +132,6 @@ public class WalletService : IWalletService
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Pago por Subasta Vendida", amount, auctionId);
 
-            // audita el deposito de saldo
-            await _auditService.RegisterLogAsync(
-            entity: "BILLETERA",
-            entityId: walletId,
-            action: "DEPOSITO",
-            userId: wallet.UserId,
-            detail: new
-            {
-                Amount = amount,
-                AuctionId = auctionId,
-                NewBalance = wallet.AvailableBalance
-            }
         );
             transaction.Complete();
         }
