@@ -63,6 +63,7 @@ public class WalletService : IWalletService
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Retención por Puja", amount, auctionId);
 
+            await _walletRepo.SaveChangesAsync();
            
             transaction.Complete();
         }
@@ -87,6 +88,8 @@ public class WalletService : IWalletService
 
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Liberación de Puja", amount, auctionId);
+            
+            await _walletRepo.SaveChangesAsync();
 
             transaction.Complete();
         }
@@ -110,6 +113,8 @@ public class WalletService : IWalletService
 
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Cobro de Subasta", amount, auctionId);
+            
+            await _walletRepo.SaveChangesAsync();
                     
             transaction.Complete();
         }
@@ -132,7 +137,8 @@ public class WalletService : IWalletService
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Pago por Subasta Vendida", amount, auctionId);
 
-        );
+            await _walletRepo.SaveChangesAsync();
+        
             transaction.Complete();
         }
     }
@@ -156,6 +162,8 @@ public class WalletService : IWalletService
 
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Retiro de Fondos", amount, null);
+            
+            await _walletRepo.SaveChangesAsync();
             
             transaction.Complete();
         }
