@@ -29,27 +29,24 @@ namespace SubastaYa.Infrastructure.Repositories
         public async Task AddAsync(T entity)
         {
             _dbSet.Add(entity);
-            await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        public Task UpdateAsync(T entity)
+        {
+            _dbSet.Update(entity);
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteAsync(T entity)
+        {
+            _dbSet.Remove(entity);
+            return Task.CompletedTask;
+        }
+
+        public async Task SaveChangesAsync()
         {
             try
             {
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw new InvalidOperationException("ConcurrencyConflict");
-            }
-        }
-
-        public async Task DeleteAsync(T entity)
-        {
-            try
-            {
-                _dbSet.Remove(entity);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
