@@ -6,13 +6,14 @@
     <title>Cartelera de Subastas Online</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/catalog.css">
+    <link rel="stylesheet" href="css/login.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Navbar Superior -->
+  <!-- HEADER -->
   <header class="navbar">
     <div class="logo-text"><strong>SUB</strong>ASTASYA</div>
     
@@ -26,18 +27,17 @@
     <nav class="nav-links">
       <a href="#">Catálogo</a>
       <a href="#">Cómo Funciona</a>
-      <a href="#" class="btn-login" id="open-modal-btn">Iniciar Sesión</a>
+      <a href="#" class="btn-login" id="openLoginBtn">Iniciar Sesión</a>
     </nav>
   </header>
 
-  <!-- Contenido Principal -->
+  <!-- CONTENIDO PRINCIPAL -->
   <main class="main-content">
     <section class="hero-banner">
       <h1>Subastas Online en Tiempo Real</h1>
       <p>Encuentra las mejores oportunidades y realiza tus pujas de forma segura.</p>
     </section>
 
-    <!-- Parrilla de Subastas / Productos -->
     <section class="catalog-section">
       <h2 class="section-title">Destacados de la semana</h2>
       <div class="auction-grid" id="auction-grid">
@@ -48,7 +48,7 @@
           </div>
           <div class="card-body">
             <h3 class="card-title">Camioneta 4x4 Modelo 2022</h3>
-            <p class="card-location"> Buenos Aires, Argentina</p>
+            <p class="card-location">Buenos Aires, Argentina</p>
             <div class="card-price-info">
               <span class="price-label">Puja actual:</span>
               <span class="price-amount">$ 4.500.000</span>
@@ -63,7 +63,7 @@
           </div>
           <div class="card-body">
             <h3 class="card-title">Lote Residencial 500m²</h3>
-            <p class="card-location"> Quilmes, Buenos Aires</p>
+            <p class="card-location">Quilmes, Buenos Aires</p>
             <div class="card-price-info">
               <span class="price-label">Puja actual:</span>
               <span class="price-amount">$ 12.800.000</span>
@@ -78,7 +78,7 @@
           </div>
           <div class="card-body">
             <h3 class="card-title">Lote de Equipamiento Informático</h3>
-            <p class="card-location"> Capital Federal</p>
+            <p class="card-location">Capital Federal</p>
             <div class="card-price-info">
               <span class="price-label">Puja actual:</span>
               <span class="price-amount">$ 850.000</span>
@@ -91,10 +91,9 @@
     </section>
   </main>
 
-  <!-- Botón Flotante de WhatsApp -->
   <a href="https://wa.me/" class="whatsapp-fab" target="_blank" rel="noopener noreferrer" aria-label="Contacto WhatsApp">💬</a>
 
-  <!-- Footer Institucional -->
+  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-content">
       <div class="footer-brand">
@@ -134,14 +133,16 @@
     </div>
   </footer>
 
-  <!-- Modal Flotante de Inicio de Sesión -->
-  <div class="modal-overlay" id="login-modal">
-    <div class="modal-card">
-      <button class="modal-close" id="close-modal-btn" aria-label="Cerrar">&times;</button>
-      
+<!-- MODAL FLOTANTE UNIFICADO (LOGIN / REGISTRO) -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-card">
+    <button class="modal-close" id="closeLoginBtn" aria-label="Cerrar">&times;</button>
+    
+    <!-- VISTA INICIAR SESIÓN -->
+    <div id="loginView">
       <h2 class="modal-title">INICIAR SESIÓN</h2>
       
-      <form id="login-form">
+      <form id="loginForm">
         <div class="form-group">
           <label for="username">USUARIO O EMAIL</label>
           <input type="text" id="username" placeholder="Ej: admin o profe" required autocomplete="username">
@@ -151,45 +152,49 @@
           <label for="password">CONTRASEÑA</label>
           <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
         </div>
-        
-        <button type="submit" class="btn-submit">Iniciar Sesión</button>
+
+        <button type="submit" class="btn-primary">Iniciar Sesión</button>
       </form>
 
       <div class="modal-divider">
         <span>¿PRIMERA VEZ?</span>
       </div>
 
-      <button type="button" class="btn-secondary" id="btn-register">REGISTRARSE</button>
+      <button class="btn-outline" type="button" id="goToRegister">REGISTRARSE</button>
+    </div>
+
+    <!-- VISTA REGISTRO -->
+    <div id="registerView" class="hidden">
+      <h2 class="modal-title">CREAR CUENTA</h2>
+      
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="regUser">USUARIO</label>
+          <input type="text" id="regUser" placeholder="Tu nombre de usuario" required autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="regEmail">CORREO ELECTRÓNICO</label>
+          <input type="email" id="regEmail" placeholder="correo@ejemplo.com" required autocomplete="email">
+        </div>
+        
+        <div class="form-group">
+          <label for="regPassword">CONTRASEÑA</label>
+          <input type="password" id="regPassword" placeholder="••••••••" required autocomplete="new-password">
+        </div>
+
+        <button type="submit" class="btn-primary">Crear Cuenta</button>
+      </form>
+
+      <div class="modal-divider">
+        <span>¿YA TENES CUENTA?</span>
+      </div>
+
+      <button class="btn-outline" type="button" id="goToLogin">INICIAR SESIÓN</button>
     </div>
   </div>
-    <!-- MODAL DE INICIO DE SESIÓN -->
-    <div class="modal-overlay" id="loginModal">
-    <div class="modal-card">
-        <button class="modal-close" id="closeLoginBtn">&times;</button>
-        <h2 class="modal-title">INICIAR SESIÓN</h2>
-        
-        <form id="loginForm" onsubmit="event.preventDefault();">
-        <div class="form-group">
-            <label for="username">USUARIO</label>
-            <input type="text" id="username" placeholder="Ej: admin o profe" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="password">CONTRASEÑA</label>
-            <input type="password" id="password" placeholder="••••••••" required>
-        </div>
-
-        <button type="submit" class="btn-primary-green">Iniciar Sesión</button>
-        </form>
-
-        <div class="modal-divider">
-        <span>¿PRIMERA VEZ?</span>
-        </div>
-        <button class="btn-outline-green" type="button">REGISTRARSE</button>
-    </div>
-
 </div>
-  <script src="js/script.js"></script>
-  <script src="login.js"></script>
+
+  <script src="js/login.js"></script>
 </body>
 </html>

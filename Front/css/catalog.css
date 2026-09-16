@@ -1,9 +1,9 @@
-/* Layout del Catálogo */
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   width: 100%;
+  flex: 1;
 }
 
 .hero-banner {
@@ -23,9 +23,12 @@
 
 .section-title {
   font-size: 1.3rem;
+  color: var(--text-bright);
   margin-bottom: 1.5rem;
   border-left: 4px solid var(--accent-color);
   padding-left: 0.75rem;
+  display: flex;
+  align-items: center;
 }
 
 .auction-grid {
@@ -91,4 +94,22 @@
 .price-amount {
   font-weight: 700;
   color: var(--accent-color);
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: var(--accent-color);
+  color: #0f172a;
+  border: none;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+  background-color: var(--accent-hover);
+  color: var(--text-bright);
 }
