@@ -1,0 +1,178 @@
+/* MODAL FLOTANTE */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-card {
+  background: #111518;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2.2rem 2rem;
+  width: 90%;
+  max-width: 380px;
+  position: relative;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 255, 56, 0.08);
+  transform: translateY(-15px) scale(0.95);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  color: #8a99a6;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: #ffffff;
+}
+
+.modal-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 1px;
+  color: #ffffff;
+  margin-bottom: 1.8rem;
+  position: relative;
+  padding-bottom: 0.6rem;
+}
+
+.modal-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background-color: #263138;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #a0aec0;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #20272c;
+  background-color: #090c0e;
+  color: #ffffff;
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #00ff38;
+  box-shadow: 0 0 8px rgba(0, 255, 56, 0.25);
+}
+
+.form-group input::placeholder {
+  color: #4a5568;
+}
+
+/* Botón principal verde neón */
+.btn-primary-green {
+  width: 100%;
+  padding: 0.85rem;
+  margin-top: 0.4rem;
+  background: linear-gradient(180deg, #10ff45 0%, #00e031 100%);
+  color: #000000;
+  border: none;
+  border-radius: 25px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 255, 56, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-primary-green:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 255, 56, 0.5);
+}
+
+/* Divisor "¿PRIMERA VEZ?" */
+.modal-divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0 1.2rem;
+}
+
+.modal-divider::before,
+.modal-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #20272c;
+}
+
+.modal-divider span {
+  padding: 0 0.8rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #718096;
+}
+
+/* Botón secundario con borde verde neón */
+.btn-outline-green {
+  width: 100%;
+  padding: 0.85rem;
+  background-color: #090c0e;
+  color: #00ff38;
+  border: 1px solid #00ff38;
+  border-radius: 25px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 56, 0.1);
+  transition: all 0.2s ease;
+}
+
+.btn-outline-green:hover {
+  background-color: rgba(0, 255, 56, 0.1);
+  box-shadow: 0 0 15px rgba(0, 255, 56, 0.3);
+}
