@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartelera de Subastas Online</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/catalog.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar Superior -->
+  <header class="navbar">
+    <div class="logo-text"><strong>SUB</strong>ASTASYA</div>
+    
+    <button class="btn-categories-dropdown">Categorías &#9660;</button>
+
+    <div class="nav-search">
+      <input type="text" placeholder="Buscar subastas, vehículos, inmuebles...">
+      <button class="btn-search" aria-label="Buscar">🔍</button>
+    </div>
+
+    <nav class="nav-links">
+      <a href="#">Catálogo</a>
+      <a href="#">Cómo Funciona</a>
+      <a href="#" class="btn-login" id="open-modal-btn">Iniciar Sesión</a>
+    </nav>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <section class="hero-banner">
+      <h1>Subastas Online en Tiempo Real</h1>
+      <p>Encuentra las mejores oportunidades y realiza tus pujas de forma segura.</p>
+    </section>
+
+    <!-- Parrilla de Subastas / Productos -->
+    <section class="catalog-section">
+      <h2 class="section-title">Destacados de la semana</h2>
+      <div class="auction-grid" id="auction-grid">
+        
+        <article class="auction-card">
+          <div class="card-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=500&q=80" alt="Vehículo">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Camioneta 4x4 Modelo 2022</h3>
+            <p class="card-location"> Buenos Aires, Argentina</p>
+            <div class="card-price-info">
+              <span class="price-label">Puja actual:</span>
+              <span class="price-amount">$ 4.500.000</span>
+            </div>
+            <button class="btn-submit">Pujar Ahora</button>
+          </div>
+        </article>
+
+        <article class="auction-card">
+          <div class="card-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=500&q=80" alt="Inmueble">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Lote Residencial 500m²</h3>
+            <p class="card-location"> Quilmes, Buenos Aires</p>
+            <div class="card-price-info">
+              <span class="price-label">Puja actual:</span>
+              <span class="price-amount">$ 12.800.000</span>
+            </div>
+            <button class="btn-submit">Pujar Ahora</button>
+          </div>
+        </article>
+
+        <article class="auction-card">
+          <div class="card-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80" alt="Tecnología">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Lote de Equipamiento Informático</h3>
+            <p class="card-location"> Capital Federal</p>
+            <div class="card-price-info">
+              <span class="price-label">Puja actual:</span>
+              <span class="price-amount">$ 850.000</span>
+            </div>
+            <button class="btn-submit">Pujar Ahora</button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Botón Flotante de WhatsApp -->
+  <a href="https://wa.me/" class="whatsapp-fab" target="_blank" rel="noopener noreferrer" aria-label="Contacto WhatsApp">💬</a>
+
+  <!-- Footer Institucional -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h2>SUBASTAS ONLINE</h2>
+        <p>Plataforma líder en subastas electrónicas transparentes y seguras en toda la región.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="#">Inicio</a></li>
+          <li><a href="#">Catálogo completo</a></li>
+          <li><a href="#">Terminados</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Soporte</h4>
+        <ul>
+          <li><a href="#">Preguntas Frecuentes</a></li>
+          <li><a href="#">Términos y Condiciones</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="#">info@subastas.com</a></li>
+          <li><a href="#">+54 11 0000-0000</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Subastas Online. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Modal Flotante de Inicio de Sesión -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-card">
+      <button class="modal-close" id="close-modal-btn" aria-label="Cerrar">&times;</button>
+      
+      <h2 class="modal-title">INICIAR SESIÓN</h2>
+      
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">USUARIO O EMAIL</label>
+          <input type="text" id="username" placeholder="Ej: admin o profe" required autocomplete="username">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">CONTRASEÑA</label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        
+        <button type="submit" class="btn-submit">Iniciar Sesión</button>
+      </form>
+
+      <div class="modal-divider">
+        <span>¿PRIMERA VEZ?</span>
+      </div>
+
+      <button type="button" class="btn-secondary" id="btn-register">REGISTRARSE</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
