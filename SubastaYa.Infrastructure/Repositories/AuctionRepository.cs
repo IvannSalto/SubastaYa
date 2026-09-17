@@ -30,7 +30,7 @@ public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Auction>> GetFilteredAsync(string? state, int? categoryId, string? sortBy)
+    public async Task<IEnumerable<Auction>> GetFilteredAsync(string? state, int? categoryId, string? sortBy, string? search, decimal? minPrice, decimal? maxPrice)
     {
         var query = _context.Auctions.AsNoTracking().AsQueryable();
 
@@ -43,6 +43,15 @@ public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
         {
             query = query.Where(a => a.CategoryId == categoryId.Value);
         }
+        
+        if (!string.IsNullOrEmpty(search))
+            query = query.Where(a => a.Title.Contains(search) || a.Description.Contains(search));
+        
+        if (minPrice.HasValue && minPrice.Value > 0)
+            query = query.Where(a => a.BasePrice >= minPrice.Value);
+
+        if (maxPrice.HasValue && maxPrice.Value > 0)
+            query = query.Where(a => a.BasePrice <= maxPrice.Value);
 
         query = sortBy?.ToLower() switch
         {

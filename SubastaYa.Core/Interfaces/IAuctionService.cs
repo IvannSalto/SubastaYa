@@ -12,7 +12,7 @@ namespace SubastaYa.Core.Interfaces
         Task<IEnumerable<Auction>> GetActiveAuctionsAsync(); // Muestra subastas activas
 
         // Filtro completo para el catálogo (Estado, Categoría y Orden)
-        Task<IEnumerable<Auction>> GetFilteredAuctionsAsync(string? state, int? categoryId, string? sortBy);
+        Task<IEnumerable<Auction>> GetFilteredAuctionsAsync(string? state, int? categoryId, string? sortBy, string? search, decimal? maxPrice, decimal? minPrice);
 
         // Publica una nueva subasta
         Task<Auction> CreateAuctionAsync(Auction auction);

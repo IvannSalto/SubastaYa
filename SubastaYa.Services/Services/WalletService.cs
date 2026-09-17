@@ -132,7 +132,6 @@ public class WalletService : IWalletService
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Pago por Subasta Vendida", amount, auctionId);
 
-        );
             transaction.Complete();
         }
     }

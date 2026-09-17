@@ -76,6 +76,16 @@ builder.Services.AddHostedService<SubastaYa.Api.Workers.AuctionClosureWorker>();
 
 builder.Services.AddScoped<IAuditService, AuditService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirFrontend", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
@@ -91,6 +101,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+
+app.UseCors("PermitirFrontend");
 
 app.UseAuthorization();
 

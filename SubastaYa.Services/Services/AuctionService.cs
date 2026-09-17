@@ -26,9 +26,9 @@ namespace SubastaYa.Services
             return await _auctionRepository.GetActiveAsync();
         }
 
-        public async Task<IEnumerable<Auction>> GetFilteredAuctionsAsync(string? state, int? categoryId, string? sortBy)
+        public async Task<IEnumerable<Auction>> GetFilteredAuctionsAsync(string? state, int? categoryId, string? sortBy, string? search, decimal? minPrice, decimal? maxPrice)
         {
-            return await _auctionRepository.GetFilteredAsync(state, categoryId, sortBy);
+            return await _auctionRepository.GetFilteredAsync(state, categoryId, sortBy, search, minPrice, maxPrice);
         }
 
         public async Task<Auction> CreateAuctionAsync(Auction auction)

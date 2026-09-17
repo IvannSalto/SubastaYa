@@ -15,7 +15,7 @@
 
   <!-- HEADER -->
   <header class="navbar">
-    <div class="logo-text"><strong>SUB</strong>ASTAS YA</div>
+    <div class="logo-text"><strong>SUBASTAS</strong> YA</div>
     
     <nav class="nav-links">
       <a href="#">Catálogo</a>
@@ -60,11 +60,11 @@
         <div class="filter-group">
           <select id="categoryFilter">
             <option value="all">Todas las Categorías</option>
-            <option value="vehiculos">Vehículos</option>
-            <option value="inmuebles">Inmuebles</option>
-            <option value="tecnologia">Tecnología</option>
-            <option value="arte">Arte</option>
-            <option value="coleccionables">Coleccionables</option>
+            <option value="1">Tecnología</option>
+            <option value="2">Coleccionables</option>
+            <option value="3">Indumentaria</option>
+            <option value="4">Vehículos</option>
+            <option value="5">Arte</option>
           </select>
         </div>
 
@@ -72,9 +72,10 @@
         <div class="filter-group">
           <select id="statusFilter">
             <option value="all">Todos los Estados</option>
-            <option value="activa">Activas (En curso)</option>
-            <option value="proxima">Próximas</option>
-            <option value="finalizada">Finalizadas</option>
+            <option value="Active">Activas (En curso)</option>
+            <option value="Pending">Próximas</option>
+            <option value="Closed">Finalizadas</option>
+            <option value="FinishedWithNoWinner">Desiertas</option>
           </select>
         </div>
 
@@ -101,57 +102,6 @@
     <section class="catalog-section">
       <h2 class="section-title">Destacados de la semana</h2>
       <div class="auction-grid" id="auction-grid">
-        
-        <!-- TARJETA 1 (Vehículo - Activa) -->
-        <article class="auction-card" data-category="vehiculos" data-state="activa" data-price="4500000" data-time="120">
-          <div class="card-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=500&q=80" alt="Vehículo">
-            <span class="badge badge-activa">En Curso</span>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">Camioneta 4x4 Modelo 2022</h3>
-            <p class="card-location">Buenos Aires, Argentina</p>
-            <div class="card-price-info">
-              <span class="price-label">Puja actual:</span>
-              <span class="price-amount">$ 4.500.000</span>
-            </div>
-            <button class="btn-submit">Pujar Ahora</button>
-          </div>
-        </article>
-
-        <!-- TARJETA 2 (Inmueble - Próxima) -->
-        <article class="auction-card" data-category="inmuebles" data-state="proxima" data-price="12800000" data-time="1440">
-          <div class="card-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=500&q=80" alt="Inmueble">
-            <span class="badge badge-proxima">Próximamente</span>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">Lote Residencial 500m²</h3>
-            <p class="card-location">Quilmes, Buenos Aires</p>
-            <div class="card-price-info">
-              <span class="price-label">Base inicial:</span>
-              <span class="price-amount">$ 12.800.000</span>
-            </div>
-            <button class="btn-submit">Pujar Ahora</button>
-          </div>
-        </article>
-
-        <!-- TARJETA 3 (Tecnología - Finalizada) -->
-        <article class="auction-card" data-category="tecnologia" data-state="finalizada" data-price="850000" data-time="0">
-          <div class="card-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80" alt="Tecnología">
-            <span class="badge badge-finalizada">Finalizada</span>
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">Lote de Equipamiento Informático</h3>
-            <p class="card-location">Capital Federal</p>
-            <div class="card-price-info">
-              <span class="price-label">Precio final:</span>
-              <span class="price-amount">$ 850.000</span>
-            </div>
-            <button class="btn-submit">Pujar Ahora</button>
-          </div>
-        </article>
 
       </div>
     </section>
@@ -297,7 +247,6 @@
   </div>
 
   <script src="js/login.js"></script>
-  <script src="js/filter.js"></script>
-  <script src="js/catalog.js    "></script>
+  <script type="module" src="js/catalog.js"></script>
 </body>
 </html>

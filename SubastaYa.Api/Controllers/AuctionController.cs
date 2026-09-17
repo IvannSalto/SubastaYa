@@ -43,9 +43,15 @@ namespace SubastaYa.API.Controllers
         
         [AllowAnonymous]
         [HttpGet("filter")]
-        public async Task<IActionResult> GetFiltered([FromQuery] string? state, [FromQuery] int? categoryId, [FromQuery] string? sortBy)
+        public async Task<IActionResult> GetFiltered(
+            [FromQuery] string? state, 
+            [FromQuery] int? categoryId, 
+            [FromQuery] string? sortBy,
+            [FromQuery] string? search,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice)
         {
-            var auctions = await _auctionService.GetFilteredAuctionsAsync(state, categoryId, sortBy);
+            var auctions = await _auctionService.GetFilteredAuctionsAsync(state, categoryId, sortBy, search, minPrice, maxPrice);
             return Ok(ApiResponse<object>.Ok(auctions, "Catálogo filtrado exitosamente."));
         }
         
