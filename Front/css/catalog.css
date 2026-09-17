@@ -113,3 +113,68 @@
   background-color: var(--accent-hover);
   color: var(--text-bright);
 }
+
+
+/* ESTILOS DEL MODAL DE PUJA */
+.bid-details {
+  background-color: #090c0e;
+  border: 1px solid #20272c;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.4rem;
+  text-align: left;
+}
+
+.bid-item-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.6rem;
+  line-height: 1.3;
+}
+
+.bid-current-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #a0aec0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 0.5rem;
+}
+
+.bid-current-info strong {
+  color: var(--accent-color);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.bid-min-hint {
+  font-size: 0.72rem;
+  color: #718096;
+  margin-top: 0.2rem;
+  display: block;
+}
+
+
+/* Estilo general para cuando una tarjeta o botón está deshabilitado */
+.auction-card[data-state="finalizada"],
+.auction-card[data-state="proxima"] {
+  opacity: 0.75; /* Les da un tono ligeramente más apagado */
+}
+
+/* Cambiar la apariencia del botón cuando la subasta no está activa */
+.auction-card[data-state="finalizada"] .btn-submit,
+.auction-card[data-state="proxima"] .btn-submit {
+  background-color: #334155 !important;
+  color: #94a3b8 !important;
+  border-color: #475569 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+.auction-card[data-state="finalizada"] .btn-submit:hover,
+.auction-card[data-state="proxima"] .btn-submit:hover {
+  background-color: #334155 !important;
+  opacity: 1;
+}

@@ -15,19 +15,27 @@
 
   <!-- HEADER -->
   <header class="navbar">
-    <div class="logo-text"><strong>SUB</strong>ASTASYA</div>
+    <div class="logo-text"><strong>SUB</strong>ASTAS YA</div>
     
-    <button class="btn-categories-dropdown">Categorías &#9660;</button>
-
-    <div class="nav-search">
-      <input type="text" placeholder="Buscar subastas, vehículos, inmuebles...">
-      <button class="btn-search" aria-label="Buscar">🔍</button>
-    </div>
-
     <nav class="nav-links">
       <a href="#">Catálogo</a>
       <a href="#">Cómo Funciona</a>
-      <a href="#" class="btn-login" id="openLoginBtn">Iniciar Sesión</a>
+      
+      <!-- CONTENEDOR DE SESIÓN / MENÚ DE USUARIO -->
+      <div class="user-menu-container" id="userMenuContainer">
+        <a href="#" class="btn-login" id="openLoginBtn">Iniciar Sesión</a>
+
+        <div class="user-dropdown hidden" id="userDropdown">
+          <button class="user-menu-btn" id="userMenuBtn" type="button">
+            <span id="userDisplayName">Usuario</span> &#9660;
+          </button>
+          <div class="dropdown-content" id="dropdownContent">
+            <a href="#mi-cuenta">Mi Cuenta</a>
+            <a href="#mis-pujas">Mis Pujas</a>
+            <button type="button" id="logoutBtn" class="dropdown-logout">Cerrar Sesión</button>
+          </div>
+        </div>
+      </div>
     </nav>
   </header>
 
@@ -38,13 +46,67 @@
       <p>Encuentra las mejores oportunidades y realiza tus pujas de forma segura.</p>
     </section>
 
+    <!-- BARRA DE FILTROS Y BÚSQUEDA DEL MÓDULO 1 -->
+    <section class="filters-section">
+      <div class="filters-container">
+        
+        <!-- Búsqueda por texto -->
+        <div class="filter-group nav-search">
+          <input type="text" id="searchInput" placeholder="Buscar subastas, vehículos, inmuebles...">
+          <button class="btn-search" id="btnSearch" aria-label="Buscar">🔍</button>
+        </div>
+
+        <!-- Filtro por Categoría -->
+        <div class="filter-group">
+          <select id="categoryFilter">
+            <option value="all">Todas las Categorías</option>
+            <option value="vehiculos">Vehículos</option>
+            <option value="inmuebles">Inmuebles</option>
+            <option value="tecnologia">Tecnología</option>
+            <option value="arte">Arte</option>
+            <option value="coleccionables">Coleccionables</option>
+          </select>
+        </div>
+
+        <!-- Filtro por Estado -->
+        <div class="filter-group">
+          <select id="statusFilter">
+            <option value="all">Todos los Estados</option>
+            <option value="activa">Activas (En curso)</option>
+            <option value="proxima">Próximas</option>
+            <option value="finalizada">Finalizadas</option>
+          </select>
+        </div>
+
+        <!-- Filtro por Rango de Precio -->
+        <div class="filter-group price-range-group">
+          <input type="number" id="minPrice" placeholder="Mín $">
+          <span>-</span>
+          <input type="number" id="maxPrice" placeholder="Máx $">
+        </div>
+
+        <!-- Ordenamiento -->
+        <div class="filter-group">
+          <select id="sortBy">
+            <option value="default">Ordenar por...</option>
+            <option value="time-asc">Menor tiempo restante</option>
+            <option value="bid-desc">Mayor puja</option>
+            <option value="bid-asc">Menor puja</option>
+          </select>
+        </div>
+
+      </div>
+    </section>
+
     <section class="catalog-section">
       <h2 class="section-title">Destacados de la semana</h2>
       <div class="auction-grid" id="auction-grid">
         
-        <article class="auction-card">
+        <!-- TARJETA 1 (Vehículo - Activa) -->
+        <article class="auction-card" data-category="vehiculos" data-state="activa" data-price="4500000" data-time="120">
           <div class="card-image-wrapper">
             <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=500&q=80" alt="Vehículo">
+            <span class="badge badge-activa">En Curso</span>
           </div>
           <div class="card-body">
             <h3 class="card-title">Camioneta 4x4 Modelo 2022</h3>
@@ -57,30 +119,34 @@
           </div>
         </article>
 
-        <article class="auction-card">
+        <!-- TARJETA 2 (Inmueble - Próxima) -->
+        <article class="auction-card" data-category="inmuebles" data-state="proxima" data-price="12800000" data-time="1440">
           <div class="card-image-wrapper">
             <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=500&q=80" alt="Inmueble">
+            <span class="badge badge-proxima">Próximamente</span>
           </div>
           <div class="card-body">
             <h3 class="card-title">Lote Residencial 500m²</h3>
             <p class="card-location">Quilmes, Buenos Aires</p>
             <div class="card-price-info">
-              <span class="price-label">Puja actual:</span>
+              <span class="price-label">Base inicial:</span>
               <span class="price-amount">$ 12.800.000</span>
             </div>
             <button class="btn-submit">Pujar Ahora</button>
           </div>
         </article>
 
-        <article class="auction-card">
+        <!-- TARJETA 3 (Tecnología - Finalizada) -->
+        <article class="auction-card" data-category="tecnologia" data-state="finalizada" data-price="850000" data-time="0">
           <div class="card-image-wrapper">
             <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80" alt="Tecnología">
+            <span class="badge badge-finalizada">Finalizada</span>
           </div>
           <div class="card-body">
             <h3 class="card-title">Lote de Equipamiento Informático</h3>
             <p class="card-location">Capital Federal</p>
             <div class="card-price-info">
-              <span class="price-label">Puja actual:</span>
+              <span class="price-label">Precio final:</span>
               <span class="price-amount">$ 850.000</span>
             </div>
             <button class="btn-submit">Pujar Ahora</button>
@@ -133,68 +199,105 @@
     </div>
   </footer>
 
-<!-- MODAL FLOTANTE UNIFICADO (LOGIN / REGISTRO) -->
-<div class="modal-overlay" id="loginModal">
-  <div class="modal-card">
-    <button class="modal-close" id="closeLoginBtn" aria-label="Cerrar">&times;</button>
-    
-    <!-- VISTA INICIAR SESIÓN -->
-    <div id="loginView">
-      <h2 class="modal-title">INICIAR SESIÓN</h2>
+  <!-- MODAL FLOTANTE UNIFICADO (LOGIN / REGISTRO) -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-card">
+      <button class="modal-close" id="closeLoginBtn" aria-label="Cerrar">&times;</button>
       
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="username">USUARIO O EMAIL</label>
-          <input type="text" id="username" placeholder="Ej: admin o profe" required autocomplete="username">
-        </div>
+      <!-- VISTA INICIAR SESIÓN -->
+      <div id="loginView">
+        <h2 class="modal-title">INICIAR SESIÓN</h2>
         
-        <div class="form-group">
-          <label for="password">CONTRASEÑA</label>
-          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">CORREO ELECTRÓNICO</label>
+            <input type="email" id="email" placeholder="correo@ejemplo.com" required autocomplete="email">
+          </div>
+          
+          <div class="form-group">
+            <label for="password">CONTRASEÑA</label>
+            <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn-primary">Iniciar Sesión</button>
+        </form>
+
+        <div class="modal-divider">
+          <span>¿PRIMERA VEZ?</span>
         </div>
 
-        <button type="submit" class="btn-primary">Iniciar Sesión</button>
-      </form>
-
-      <div class="modal-divider">
-        <span>¿PRIMERA VEZ?</span>
+        <button class="btn-outline" type="button" id="goToRegister">REGISTRARSE</button>
       </div>
 
-      <button class="btn-outline" type="button" id="goToRegister">REGISTRARSE</button>
-    </div>
-
-    <!-- VISTA REGISTRO -->
-    <div id="registerView" class="hidden">
-      <h2 class="modal-title">CREAR CUENTA</h2>
-      
-      <form id="registerForm">
-        <div class="form-group">
-          <label for="regUser">USUARIO</label>
-          <input type="text" id="regUser" placeholder="Tu nombre de usuario" required autocomplete="username">
-        </div>
-
-        <div class="form-group">
-          <label for="regEmail">CORREO ELECTRÓNICO</label>
-          <input type="email" id="regEmail" placeholder="correo@ejemplo.com" required autocomplete="email">
-        </div>
+      <!-- VISTA REGISTRO -->
+      <div id="registerView" class="hidden">
+        <h2 class="modal-title">CREAR CUENTA</h2>
         
-        <div class="form-group">
-          <label for="regPassword">CONTRASEÑA</label>
-          <input type="password" id="regPassword" placeholder="••••••••" required autocomplete="new-password">
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="regFullName">NOMBRE Y APELLIDO</label>
+            <input type="text" id="regFullName" placeholder="Ej: Juan Pérez" required autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label for="regEmail">CORREO ELECTRÓNICO</label>
+            <input type="email" id="regEmail" placeholder="correo@ejemplo.com" required autocomplete="email">
+          </div>
+          
+          <div class="form-group">
+            <label for="regPassword">CONTRASEÑA</label>
+            <input type="password" id="regPassword" placeholder="••••••••" required autocomplete="new-password">
+          </div>
+
+          <div class="form-group">
+            <label for="regConfirmPassword">CONFIRMAR CONTRASEÑA</label>
+            <input type="password" id="regConfirmPassword" placeholder="••••••••" required autocomplete="new-password">
+            <small class="error-text" id="regPasswordError"></small>
+          </div>
+
+          <button type="submit" class="btn-primary">Crear Cuenta</button>
+        </form>
+
+        <div class="modal-divider">
+          <span>¿YA TENES CUENTA?</span>
         </div>
 
-        <button type="submit" class="btn-primary">Crear Cuenta</button>
-      </form>
-
-      <div class="modal-divider">
-        <span>¿YA TENES CUENTA?</span>
+        <button class="btn-outline" type="button" id="goToLogin">INICIAR SESIÓN</button>
       </div>
 
-      <button class="btn-outline" type="button" id="goToLogin">INICIAR SESIÓN</button>
     </div>
   </div>
-</div>
+
+  <div id="toast" class="toast-notification"></div>
+
+  <!-- MODAL DE PUJA INTERACTIVA -->
+  <div class="modal-overlay" id="bidModal">
+    <div class="modal-card">
+      <button class="modal-close" id="closeBidBtn" aria-label="Cerrar">&times;</button>
+      <h2 class="modal-title">REALIZAR PUJA</h2>
+      
+      <div class="bid-details">
+        <p class="bid-item-title" id="bidItemTitle">Título del Producto</p>
+        <div class="bid-current-info">
+          <span>Puja actual:</span>
+          <strong id="bidCurrentPrice">$ 0</strong>
+        </div>
+      </div>
+
+      <form id="bidForm">
+        <div class="form-group">
+          <label for="bidAmount">TU OFERTA ($)</label>
+          <input type="number" id="bidAmount" placeholder="Ej: 4600000" required step="1000">
+          <small class="bid-min-hint" id="bidMinHint">Monto mínimo sugerido: $ 0</small>
+        </div>
+
+        <button type="submit" class="btn-primary">Confirmar Puja</button>
+      </form>
+    </div>
+  </div>
 
   <script src="js/login.js"></script>
+  <script src="js/filter.js"></script>
+  <script src="js/catalog.js    "></script>
 </body>
 </html>
