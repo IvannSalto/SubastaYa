@@ -2,6 +2,7 @@ import { getFilteredAuctions } from './auctionsService.js';
 import { formatPrice } from './utils.js';
 import { startCountdown } from './components/timer.js';
 import { initBidManager } from './components/bidManager.js';
+import { initAuctionCreator } from './components/auctionCreator.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const auctionGrid = document.getElementById('auction-grid');
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         auctions.forEach(subasta => {
             const stateDictionary = {
+                'Active': { text: 'En Curso', cssClass: 'activa' },
                 'Active': { text: 'En Curso', cssClass: 'activa' },
                 'Pending': { text: 'Próximamente', cssClass: 'proxima' },
                 'Closed': { text: 'Finalizada', cssClass: 'finalizada' },
@@ -92,5 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicialización general
     initBidManager();
+    initAuctionCreator();
     applyFiltersAndSort();
 });

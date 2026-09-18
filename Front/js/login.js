@@ -35,13 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // --- PERSISTENCIA DE SESIÓN ---
-  const saveSession = (userData) => {
+  const saveSession = (userData, token) => {
     localStorage.setItem('currentUser', JSON.stringify(userData));
+    if (token) {
+      localStorage.setItem('token', token); 
+    }
     updateUI();
   };
 
   const clearSession = () => {
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('token');
     updateUI();
   };
 
@@ -52,15 +56,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const updateUI = () => {
     const user = getSession();
-
+    const openCreateModalBtn = document.getElementById('openCreateModalBtn');
     if (user) {
       if (openLoginBtn) openLoginBtn.classList.add('hidden');
+
+      if (openCreateModalBtn) {
+        openCreateModalBtn.classList.remove('hidden');
+        openCreateModalBtn.style.display = 'inline-block'; 
+      }
+
       if (userDropdown) {
         userDropdown.classList.remove('hidden');
         userDisplayName.textContent = user.name || user.email;
       }
     } else {
       if (openLoginBtn) openLoginBtn.classList.remove('hidden');
+      if (openCreateModalBtn) {
+        openCreateModalBtn.classList.add('hidden');
+        openCreateModalBtn.style.display = 'none';
+      }
       if (userDropdown) {
         userDropdown.classList.add('hidden');
         userDropdown.classList.remove('open');
@@ -136,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- FORMULARIOS AUTH ---
+  // --- FORMULARIO DE REGISTRO ---
   if (registerForm) {
     const passwordInput = document.getElementById('regPassword');
     const confirmInput = document.getElementById('regConfirmPassword');
@@ -150,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    registerForm.addEventListener('submit', (e) => {
+    registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const fullName = document.getElementById('regFullName').value.trim();
@@ -169,24 +183,72 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      saveSession({ name: fullName, email: email });
-      showToast(`¡Cuenta creada con éxito para ${fullName}!`);
-      registerForm.reset();
-      closeAuthModal();
+      try {
+        const response = await fetch('http://localhost:5142/api/Auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            name: fullName, 
+            email: email, 
+            password: password 
+          })
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (response.ok) {
+          showToast(`¡Cuenta creada con éxito para ${fullName}! Ya puedes iniciar sesión.`);
+          registerForm.reset();
+          closeAuthModal();
+          
+          if (loginView && registerView) {
+            registerView.classList.add('hidden');
+            loginView.classList.remove('hidden');
+          }
+        } else {
+          showToast(result.message || 'Error al registrar el usuario', true);
+        }
+
+      } catch (error) {
+        console.error('Error de red en el registro:', error);
+        showToast('No se pudo conectar con el servidor para registrarse', true);
+      }
     });
   }
 
+  // --- FORMULARIO DE INICIO DE SESIÓN (LOGIN) ---
   if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const email = document.getElementById('email').value.trim();
-      const displayName = email.split('@')[0];
+      const password = document.getElementById('password').value;
 
-      saveSession({ name: displayName, email: email });
-      showToast(`¡Bienvenido de nuevo, ${email}!`);
-      loginForm.reset();
-      closeAuthModal();
+      try {
+        const response = await fetch('http://localhost:5142/api/Auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (response.ok) {
+          const token = typeof result === 'string' ? result : (result.token || result.accessToken || result.data);
+          const userName = result.name || email.split('@')[0];
+
+          saveSession({ name: userName, email: email }, token);
+          showToast(`¡Bienvenido de nuevo, ${userName}!`);
+          loginForm.reset();
+          closeAuthModal();
+        } else {
+          showToast(result.message || 'Credenciales incorrectas', true);
+        }
+      } catch (error) {
+        console.error('Error de red en el login:', error);
+        showToast('No se pudo conectar con el servidor', true);
+      }
     });
   }
+
 });

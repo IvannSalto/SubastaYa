@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://localhost:7281/api/Auction';
+const API_BASE_URL = 'http://localhost:5142/api/Auction';
 
 export async function getFilteredAuctions(state, categoryId, sortBy, search, minPrice, maxPrice) {
     try {
@@ -25,5 +25,89 @@ export async function getFilteredAuctions(state, categoryId, sortBy, search, min
     } catch (error) {
         console.error("Error conectando a la API:", error);
         return [];
+    }
+}
+
+function getAuthHeaders() { 
+    
+    const token = localStorage.getItem('token'); 
+    
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return headers;
+}
+
+export async function createAuction(auctionData) {
+    try {
+        const response = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(auctionData)
+        });
+
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.message || `Error al crear subasta: HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        return result.data || result.Data || result;
+
+    } catch (error) {
+        console.error("Error al crear subasta:", error);
+        throw error;
+    }
+}
+
+/**
+ * Realiza una puja (Corresponde a [HttpPost("{auctionId}/bid")] en tu Controller)
+ */
+export async function placeBid(auctionId, amount) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/${auctionId}/bid`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ amount }) // Coincide con tu BidRequest { amount }
+        });
+
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.message || `Error al realizar la puja: HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        return result.data || result.Data || result;
+
+    } catch (error) {
+        console.error("Error al pujar:", error);
+        throw error;
+    }
+}
+
+/**cierra una subasta **/
+export async function closeAuction(auctionId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/${auctionId}/close`, {
+            method: 'POST',
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.message || `Error al cerrar la subasta: HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        return result.data || result.Data || result;
+
+    } catch (error) {
+        console.error("Error al cerrar subasta:", error);
+        throw error;
     }
 }

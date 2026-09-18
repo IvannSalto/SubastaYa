@@ -1,5 +1,5 @@
 import { formatPrice, parsePrice, showToast } from '../utils.js';
-
+import { placeBid } from '../auctionsService.js';
 export function initBidManager() {
     const bidModal = document.getElementById('bidModal');
     const closeBidBtn = document.getElementById('closeBidBtn');
