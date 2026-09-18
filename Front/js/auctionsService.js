@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5142/api/Auction';
+const API_BASE_URL = 'https://localhost:7281/api/Auction';
 
 export async function getFilteredAuctions(state, categoryId, sortBy, search, minPrice, maxPrice) {
     try {

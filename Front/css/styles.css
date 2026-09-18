@@ -509,3 +509,25 @@ body {
 #auctionImageFile::file-selector-button:hover {
     background-color: #30363d;
 }
+
+.user-bid-status {
+    margin: 10px 0;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.user-bid-status.winning {
+    background-color: #dcfce7; /* Verde clarito */
+    color: #166534; /* Texto verde oscuro */
+    border: 1px solid #bbf7d0;
+}
+
+.user-bid-status.outbid {
+    background-color: #fee2e2; /* Rojo clarito */
+    color: #991b1b; /* Texto rojo oscuro */
+    border: 1px solid #fecaca;
+}

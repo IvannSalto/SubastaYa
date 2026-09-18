@@ -49,5 +49,10 @@ namespace SubastaYa.Core.Entities
         public Category Category { get; set; }
         
         public ICollection<Bid> Bids { get; set; }
+        
+        [NotMapped]
+        public decimal CurrentPrice => Bids != null && Bids.Any() 
+            ? Bids.Max(b => b.Amount) 
+            : BasePrice;
     }
 }

@@ -9,6 +9,7 @@ using SubastaYa.Infrastructure.Data;
 using SubastaYa.Infrastructure.Repositories;
 using SubastaYa.Services;
 using System.Text.Json.Serialization;
+using SubastaYa.Api.Services;
 using SubastaYa.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,9 @@ builder.Services.AddOpenApi();
 
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+builder.Services.AddSignalR();
+builder.Services.AddScoped<IAuctionNotifier, SignalRAuctionNotifier>();
 
 // Configuracion de JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -80,9 +84,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirFrontend", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.SetIsOriginAllowed(origin => true)
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -107,6 +112,8 @@ app.UseCors("PermitirFrontend");
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<SubastaYa.Api.Hubs.AuctionHub>("/auctionHub");
 
 //---- Seeder---------
 using (var scope = app.Services.CreateScope())

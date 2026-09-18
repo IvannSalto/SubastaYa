@@ -1,3 +1,5 @@
+const API_BASE_URL = 'https://localhost:7281/api/Auth';
+
 document.addEventListener('DOMContentLoaded', () => {
   const loginModal = document.getElementById('loginModal');
   const openLoginBtn = document.getElementById('openLoginBtn');
@@ -184,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
-        const response = await fetch('http://localhost:5142/api/Auth/register', {
+        const response = await fetch(`${API_BASE_URL}/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
@@ -225,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = document.getElementById('password').value;
 
       try {
-        const response = await fetch('http://localhost:5142/api/Auth/login', {
+        const response = await fetch(`${API_BASE_URL}/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })

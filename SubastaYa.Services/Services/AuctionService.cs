@@ -9,11 +9,13 @@ namespace SubastaYa.Services
         private readonly IAuctionRepository _auctionRepository;
         private readonly IWalletService _walletService;
         private readonly IAuditService _auditService;
-        public AuctionService(IAuctionRepository auctionRepository, IWalletService wallerService, IAuditService auditService)
+        private readonly IAuctionNotifier _notifier;
+        public AuctionService(IAuctionRepository auctionRepository, IWalletService wallerService, IAuditService auditService, IAuctionNotifier notifier)
         {
             _auctionRepository = auctionRepository;
             _walletService = wallerService;
             _auditService = auditService;
+            _notifier = notifier;
         }
 
         public async Task<Auction?> GetByIdAsync(int id)
@@ -70,7 +72,11 @@ namespace SubastaYa.Services
             if (auction.SellerId == buyerId)
                 throw new InvalidOperationException("No podés pujar por tu propio producto.");
             
-            var highestBid = auction.Bids?.OrderByDescending(b => b.Amount).FirstOrDefault(); 
+            var highestBid = auction.Bids?.OrderByDescending(b => b.Amount).FirstOrDefault();
+            
+            if (highestBid != null && highestBid.BuyerId == buyerId)
+                throw new InvalidOperationException("Ya tenés la puja más alta en esta subasta.");
+            
             decimal minRequiredAmount = highestBid != null      //seteamos valor minimo para pujar
                 ? highestBid.Amount + auction.MinimumIncrement
                 : auction.BasePrice;
@@ -121,7 +127,8 @@ namespace SubastaYa.Services
                         NewEndDate = auction.EndDate
                     }
                 );
-
+                
+                await _notifier.BroadcastNewBidAsync(auctionId, amount);
                 return true;
             }
             catch (InvalidOperationException ex) when (ex.Message == "ConcurrencyConflict")
@@ -185,6 +192,8 @@ namespace SubastaYa.Services
                     WinningAmount = highestBid?.Amount
                 }
             );
+            
+            await _notifier.BroadcastAuctionClosedAsync(auctionId, auction.WinnerId);
             return true;
         }
 

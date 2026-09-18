@@ -32,7 +32,7 @@ public class AuctionRepository : GenericRepository<Auction>,IAuctionRepository
 
     public async Task<IEnumerable<Auction>> GetFilteredAsync(string? state, int? categoryId, string? sortBy, string? search, decimal? minPrice, decimal? maxPrice)
     {
-        var query = _context.Auctions.AsNoTracking().AsQueryable();
+        var query = _context.Auctions.Include(a => a.Bids).AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(state))
         {
