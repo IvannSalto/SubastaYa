@@ -233,8 +233,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const result = await response.json().catch(() => ({}));
 
-        if (response.ok) {
-          const token = typeof result === 'string' ? result : (result.token || result.accessToken || result.data);
+        if (response.ok) {  
+          let token = null;
+          if (typeof result === 'string') {
+              token = result;
+          } else if (result) {
+              const rawToken = result.token || result.accessToken || result.data;
+              
+              if (typeof rawToken === 'object' && rawToken !== null) {
+                  token = rawToken.token || rawToken.accessToken;
+              } else {
+                  token = rawToken;
+              }
+          }
           const userName = result.name || email.split('@')[0];
 
           saveSession({ name: userName, email: email }, token);

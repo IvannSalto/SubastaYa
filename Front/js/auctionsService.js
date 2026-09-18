@@ -45,9 +45,29 @@ function getAuthHeaders() {
 
 export async function createAuction(auctionData) {
     try {
+        let token = localStorage.getItem('token');
+
+        // Si el token se guardó mal como "[object Object]", intentamos rescatarlo de "currentUser"
+        if (!token || token === '[object Object]') {
+            const currentUserStr = localStorage.getItem('currentUser');
+            if (currentUserStr) {
+                try {
+                    const userObj = JSON.parse(currentUserStr);
+                    token = userObj.token || userObj.accessToken || userObj.jwt;
+                } catch (e) {}
+            }
+        }
+
+        if (!token || token === '[object Object]') {
+            throw new Error("No hay un token de sesión válido. Por favor, cierra sesión y vuelve a ingresar.");
+        }
+
         const response = await fetch(API_BASE_URL, {
             method: 'POST',
-            headers: getAuthHeaders(),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(auctionData)
         });
 
@@ -64,7 +84,6 @@ export async function createAuction(auctionData) {
         throw error;
     }
 }
-
 /**
  * Realiza una puja (Corresponde a [HttpPost("{auctionId}/bid")] en tu Controller)
  */
