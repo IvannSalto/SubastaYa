@@ -1,0 +1,63 @@
+.dashboard-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+    flex: 1;
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    height: fit-content;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover { background-color: rgba(255, 255, 255, 0.05); color: var(--text-bright); }
+.tab-btn.active { background-color: rgba(56, 189, 248, 0.15); color: var(--accent-color); border-left: 3px solid var(--accent-color); }
+
+/* Contenido */
+.tab-content { display: none; animation: fadeIn 0.3s; }
+.tab-content.active { display: block; }
+
+/* Tarjetas de Billetera */
+.wallet-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+.balance-card { padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); }
+.balance-card.available { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05)); border-color: rgba(16, 185, 129, 0.3); }
+.balance-card.retained { background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05)); border-color: rgba(245, 158, 11, 0.3); }
+.balance-card h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+.balance-card h2 { font-size: 2rem; }
+.balance-card.available h2 { color: #34d399; }
+.balance-card.retained h2 { color: #fbbf24; }
+
+.wallet-actions { display: flex; gap: 1rem; margin-bottom: 2.5rem; }
+.wallet-actions button { width: 200px; }
+
+/* Tabla */
+.history-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 8px; overflow: hidden; }
+.history-table th, .history-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+.history-table th { background: rgba(0,0,0,0.2); font-size: 0.85rem; color: var(--text-subtle); text-transform: uppercase; }
+.history-table td { font-size: 0.9rem; }

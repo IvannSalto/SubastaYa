@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Panel - Subastas Ya</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="navbar">
+    <a href="index.html" class="logo-text" style="text-decoration: none;"><strong>SUBASTAS</strong> YA</a>
+
+    <nav class="nav-links">
+        <!-- Contenedor de sesion -->
+        <div class="user-menu-container" id="userMenuContainer">
+            <div class="user-dropdown hidden" id="userDropdown">
+                <button class="user-menu-btn" id="userMenuBtn" type="button">
+                    <span id="userDisplayName">Usuario</span> &#9660;
+                </button>
+                <div class="dropdown-content" id="dropdownContent">
+                    <a href="dashboard.html?tab=cuenta">Mi Cuenta</a>
+                    <a href="dashboard.html?tab=billetera">Mi Billetera</a>
+                    <a href="dashboard.html?tab=pujas">Mis Pujas</a>
+                    <button type="button" id="logoutBtn" class="dropdown-logout">Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="dashboard-container">
+    <!-- Menú Lateral -->
+    <aside class="dashboard-sidebar">
+        <nav class="sidebar-menu">
+            <button class="tab-btn" data-target="cuenta">Mi Cuenta</button>
+            <button class="tab-btn active" data-target="billetera">Mi Billetera</button>
+            <button class="tab-btn" data-target="pujas">Mis Pujas</button>
+        </nav>
+    </aside>
+
+    <!-- Area de Contenido -->
+    <section class="dashboard-content">
+
+        <!-- pestana "billetera" -->
+        <div id="billetera" class="tab-content active">
+            <h2 class="section-title">Gestión de Fondos</h2>
+
+            <div class="wallet-cards">
+                <div class="balance-card available">
+                    <h3>Saldo Disponible</h3>
+                    <h2 id="dashAvailableBalance">$ 0,00</h2>
+                </div>
+                <div class="balance-card retained">
+                    <h3>Saldo Retenido (Pujas activas)</h3>
+                    <h2 id="dashRetainedBalance">$ 0,00</h2>
+                </div>
+            </div>
+
+            <div class="wallet-actions">
+                <button class="btn-primary" id="btnDeposit">Ingresar Dinero</button>
+                <button class="btn-outline" id="btnWithdraw">Retirar Fondos</button>
+            </div>
+
+            <div class="transaction-history">
+                <h3>Últimos Movimientos</h3>
+                <table class="history-table">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Concepto</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                    </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-muted);">Cargando movimientos...</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- pestana "mis pujas" -->
+        <div id="pujas" class="tab-content hidden">
+            <h2 class="section-title">Mis Pujas Activas e Históricas</h2>
+            <p style="color: var(--text-muted);">Próximamente...</p>
+        </div>
+
+        <!-- pestana "mi cuenta" -->
+        <div id="cuenta" class="tab-content hidden">
+            <h2 class="section-title">Datos Personales</h2>
+            <p style="color: var(--text-muted);">Proximamente...</p>
+        </div>
+
+    </section>
+</main>
+
+<script src="js/login.js"></script>
+<script src="js/dashboard.js" type="module"></script>
+</body>
+</html>
