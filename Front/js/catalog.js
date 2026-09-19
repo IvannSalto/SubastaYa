@@ -137,6 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyFiltersAndSort();
 
+    window.addEventListener('authStateChanged', () => {  //recarga las tarjetas en un inicio o cierre se sesion
+        applyFiltersAndSort();
+    });
+
     
     // SignalR
     const connection = new signalR.HubConnectionBuilder()

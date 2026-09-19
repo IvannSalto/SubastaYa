@@ -156,6 +156,30 @@
   display: block;
 }
 
+/* saldo dentro del modal de puja*/
+.bid-wallet-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding: 0.75rem 1rem;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.bid-wallet-info span {
+  color: #a0aec0;
+  font-weight: 600;
+}
+
+.bid-wallet-info strong {
+  color: #34d399; /* Verde esmeralda */
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
 
 /* Estilo general para cuando una tarjeta o botón está deshabilitado */
 .auction-card[data-state="finalizada"],

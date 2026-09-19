@@ -30,6 +30,10 @@ export function initBidManager(onBidSuccess) {
                 return;
             }
 
+            const userObj = JSON.parse(session);
+            const saldo = userObj.wallet !== undefined ? userObj.wallet : 0;
+            document.getElementById('bidModalWalletBalance').textContent = `$ ${Number(saldo).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            
             activeCardElement = card;
             currentActivePrice = parsePrice(card.querySelector('.price-amount')?.textContent || '$ 0');
 

@@ -55,12 +55,16 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('token', token); 
     }
     updateUI();
+
+    window.dispatchEvent(new Event('authStateChanged'));
   };
 
   const clearSession = () => {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
     updateUI();
+
+    window.dispatchEvent(new Event('authStateChanged'));
   };
 
   const getSession = () => {
