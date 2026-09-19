@@ -18,8 +18,16 @@
     <div class="logo-text"><strong>SUBASTAS</strong> YA</div>
     
     <nav class="nav-links">
-      <a href="#">Catálogo</a>
-      <a href="#">Cómo Funciona</a>
+      
+    <div id="walletDisplay" class="wallet-display hidden">
+        <span class="wallet-label">Saldo:</span>
+        <strong id="userWalletBalance">$ 0</strong>
+        
+        <span class="wallet-divider">|</span>
+        
+        <span>Retenido: <span id="userWalletRetained">$ 0</span></span>
+    </div>
+
       <button id="openCreateModalBtn" class="btn-outline hidden">Crear Subasta</button>
       <!-- CONTENEDOR DE SESIÓN / MENÚ DE USUARIO -->
       <div class="user-menu-container" id="userMenuContainer">
@@ -294,7 +302,9 @@
     </div>
 </div>
   <script src="js/login.js"></script>
+  <script src="js/puja.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
   <script type="module" src="js/catalog.js"></script>
+  
 </body>
 </html>

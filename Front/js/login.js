@@ -1,5 +1,17 @@
 const API_BASE_URL = 'https://localhost:7281/api/Auth';
 
+// --- HELPER: Decodificar Token JWT de C# ---
+const parseJwt = (token) => {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        return null;
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const loginModal = document.getElementById('loginModal');
   const openLoginBtn = document.getElementById('openLoginBtn');
@@ -56,9 +68,56 @@ document.addEventListener('DOMContentLoaded', () => {
     return session ? JSON.parse(session) : null;
   };
 
-  const updateUI = () => {
+  // --- CONSULTAR BILLETERA AL BACKEND ---
+window.fetchWalletBalance = async () => {
+    const token = localStorage.getItem('token');
+    const currentUser = getSession();
+    
+    if (!token || !currentUser || !currentUser.id) return;
+
+    try {
+        const response = await fetch(`https://localhost:7281/api/Wallet/user/${currentUser.id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const apiResponse = await response.json();
+            const wallet = apiResponse.data || apiResponse;
+
+            // 1. Obtener el saldo disponible
+            const balance = wallet.availableBalance !== undefined ? wallet.availableBalance : 
+                           (wallet.AvailableBalance !== undefined ? wallet.AvailableBalance : (wallet.balance || 0));
+
+            // 2. Obtener el saldo retenido (mapeando correctamente a 'balanceHeld' / 'BalanceHeld')
+            const retained = wallet.balanceHeld !== undefined ? wallet.balanceHeld : 
+                            (wallet.BalanceHeld !== undefined ? wallet.BalanceHeld : 
+                            (wallet.retainedBalance || wallet.RetainedBalance || wallet.retained || 0));
+
+            // Guardar en el objeto de sesión
+            currentUser.wallet = balance;
+            currentUser.retained = retained;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Refrescar la interfaz para que dibuje los nuevos valores
+            updateUI();
+        }
+    } catch (error) {
+        console.error('Error al obtener la billetera:', error);
+    }
+};
+
+  // --- ACTUALIZAR INTERFAZ (UI) ---
+ const updateUI = () => {
     const user = getSession();
     const openCreateModalBtn = document.getElementById('openCreateModalBtn');
+    const walletDisplay = document.getElementById('walletDisplay');
+    const userWalletBalance = document.getElementById('userWalletBalance');
+    const retainedElement = document.getElementById('userWalletRetained');
+
     if (user) {
       if (openLoginBtn) openLoginBtn.classList.add('hidden');
 
@@ -71,20 +130,55 @@ document.addEventListener('DOMContentLoaded', () => {
         userDropdown.classList.remove('hidden');
         userDisplayName.textContent = user.name || user.email;
       }
+
+      // Mostrar billetera y sus saldos
+      if (walletDisplay) {
+        walletDisplay.classList.remove('hidden');
+        walletDisplay.style.display = 'inline-flex';
+      }
+
+      // 1. Mostrar saldo disponible
+      if (userWalletBalance) {
+        const saldo = user.wallet !== undefined ? user.wallet : 0;
+        userWalletBalance.textContent = `$ ${Number(saldo).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+
+      // 2. Mostrar saldo retenido (¡Ahora está dentro del usuario logueado!)
+      if (retainedElement) {
+        const retainedAmount = user.retained || 0;
+        retainedElement.textContent = `$ ${Number(retainedAmount).toLocaleString('es-AR', { 
+          minimumFractionDigits: 2, 
+          maximumFractionDigits: 2 
+        })}`;
+      }
+
     } else {
       if (openLoginBtn) openLoginBtn.classList.remove('hidden');
+      
       if (openCreateModalBtn) {
         openCreateModalBtn.classList.add('hidden');
         openCreateModalBtn.style.display = 'none';
       }
+
       if (userDropdown) {
         userDropdown.classList.add('hidden');
         userDropdown.classList.remove('open');
       }
+
+      // Ocultar billetera si no hay sesión
+      if (walletDisplay) {
+        walletDisplay.classList.add('hidden');
+        walletDisplay.style.display = 'none';
+      }
     }
   };
 
+  // Inicializar UI al cargar
   updateUI();
+  const savedUser = getSession();
+  if (savedUser && savedUser.id) {
+      fetchWalletBalance();
+  }
 
   // --- MENÚ DESPLEGABLE USUARIO ---
   if (userMenuBtn && userDropdown) {
@@ -141,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Cerrar modal con clic fuera o tecla ESC
   window.addEventListener('click', (e) => {
     if (e.target === loginModal) closeAuthModal();
   });
@@ -241,16 +334,22 @@ document.addEventListener('DOMContentLoaded', () => {
               token = result;
           } else if (result) {
               const rawToken = result.token || result.accessToken || result.data;
-              
               if (typeof rawToken === 'object' && rawToken !== null) {
                   token = rawToken.token || rawToken.accessToken;
               } else {
                   token = rawToken;
               }
           }
+
+          // Extraer ID de usuario y sincronizar billetera
+          const tokenData = parseJwt(token);
+          const userId = result.id || result.userId || tokenData?.sub || tokenData?.nameid || tokenData?.id ||tokenData?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
           const userName = result.name || email.split('@')[0];
 
-          saveSession({ name: userName, email: email }, token);
+          saveSession({ id: Number(userId), name: userName, email: email, wallet: 0 }, token);
+          
+          await fetchWalletBalance();
+
           showToast(`¡Bienvenido de nuevo, ${userName}!`);
           loginForm.reset();
           closeAuthModal();

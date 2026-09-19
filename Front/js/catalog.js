@@ -125,7 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicialización general
     initBidManager(() => {
-        applyFiltersAndSort();
+        applyFiltersAndSort(); 
+        if (typeof window.fetchWalletBalance === 'function') {
+            window.fetchWalletBalance();
+        }
     });
 
     initAuctionCreator(() => {
@@ -142,9 +145,16 @@ document.addEventListener('DOMContentLoaded', () => {
         .build();
 
 
-    connection.on("ReceiveNewBid", (auctionId, newAmount) => {
+  connection.on("ReceiveNewBid", (auctionId, newAmount) => {
         console.log(`Puja en tiempo real detectada! Subasta: ${auctionId}, Nuevo Monto: $${newAmount}`);
+        
+        
         applyFiltersAndSort();
+        
+       
+        if (typeof window.fetchWalletBalance === 'function') {
+            window.fetchWalletBalance();
+        }
     });
 
     connection.on("ReceiveAuctionClosed", (auctionId, winnerId) => {
@@ -162,6 +172,5 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(startSignalR, 5000); // Reintento en 5 segundos si falla
         }
     }
-
     startSignalR();
 });
