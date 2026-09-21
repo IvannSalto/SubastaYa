@@ -21,7 +21,6 @@
                     <span id="userDisplayName">Usuario</span> &#9660;
                 </button>
                 <div class="dropdown-content" id="dropdownContent">
-                    <a href="dashboard.html?tab=cuenta">Mi Cuenta</a>
                     <a href="dashboard.html?tab=billetera">Mi Billetera</a>
                     <a href="dashboard.html?tab=pujas">Mis Pujas</a>
                     <button type="button" id="logoutBtn" class="dropdown-logout">Cerrar Sesión</button>
@@ -35,7 +34,6 @@
     <!-- Menú Lateral -->
     <aside class="dashboard-sidebar">
         <nav class="sidebar-menu">
-            <button class="tab-btn" data-target="cuenta">Mi Cuenta</button>
             <button class="tab-btn active" data-target="billetera">Mi Billetera</button>
             <button class="tab-btn" data-target="pujas">Mis Pujas</button>
         </nav>
@@ -90,14 +88,8 @@
         <div id="myBidsGrid" class="auction-grid" style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
             <p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Cargando tus pujas...</p>
         </div>
-</div>
-
-        <!-- pestana "mi cuenta" -->
-        <div id="cuenta" class="tab-content hidden">
-            <h2 class="section-title">Datos Personales</h2>
-            <p style="color: var(--text-muted);">Proximamente...</p>
         </div>
-
+        
     </section>
 </main>
 

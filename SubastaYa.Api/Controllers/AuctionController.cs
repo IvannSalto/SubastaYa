@@ -58,22 +58,24 @@ namespace SubastaYa.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAuctionRequest request)
         {
-            int sellerId = User.GetUserId(); //se extrae el id del mismo t oken
+            int sellerId = User.GetUserId();
             
+            string initialState = request.StartDate > ArgTime.Now.AddMinutes(2) ? "Pending" : "Active";
             var auction = new Auction
             {
                 Title = request.Title,
                 Description = request.Description,
                 BasePrice = request.BasePrice,
+                
+                StartDate = request.StartDate, 
                 EndDate = request.EndDate,
+                
                 SellerId = sellerId,
                 UrlImage = request.UrlImage,
                 CategoryId = request.CategoryId,
                 
-                // rellenamos por default
                 MinimumIncrement = 1000, 
-                StartDate = ArgTime.Now,
-                State = "Activa", 
+                State = initialState,
                 Bids = new List<Bid>() 
             };
 

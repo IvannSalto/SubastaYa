@@ -183,7 +183,7 @@
 }
 
 
-/* NOTIFICACIÓN EN PÁGINA (TOAST) */
+/* Toast*/
 .toast-notification {
   position: fixed;
   bottom: 2rem;

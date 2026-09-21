@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!currentUser || !token) {
         window.location.replace('index.html');
-        return; // Detiene la ejecución del resto del código
+        return; 
     }
 
-    // --- 1. GESTIÓN DE PESTAÑAS (TABS) ---
+    // Gestion de pestañas
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const amount = parseFloat(document.getElementById('transactionAmount').value);
-        const type = transactionTypeInput.value; // 'deposit' o 'withdraw'
+        const type = transactionTypeInput.value; // deposit o withdraw
 
         const endpoint = type === 'deposit'
             ? `${API_BASE_URL}/Wallet/deposit`
@@ -320,26 +320,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json().catch(() => ({}));
 
             if (response.ok) {
-                // 1. Cerramos el modal
                 transactionModal.classList.remove('active');
-
-                // 2. Recargamos saldos
+                
                 loadWalletData();
                 if (typeof window.fetchWalletBalance === 'function') {
                     window.fetchWalletBalance();
                 }
 
-                // 3. MOSTRAMOS EL TOAST DE ÉXITO ESTILIZADO
                 showToast(`¡${type === 'deposit' ? 'Ingreso' : 'Retiro'} de $${amount.toLocaleString('es-AR')} procesado con éxito!`);
 
             } else {
-                // MOSTRAMOS EL TOAST DE ERROR (el 'true' lo pinta de rojo)
                 const errorMsg = result.message || result.Message || result.title || 'Error al procesar la transacción.';
                 showToast(errorMsg, true);
             }
         } catch (error) {
             console.error('Error de red:', error);
-            // MOSTRAMOS ERROR DE CONEXIÓN
             showToast('No se pudo conectar con el servidor.', true);
         }
     });

@@ -182,14 +182,14 @@
 
 
 /* Estilo general para cuando una tarjeta o botón está deshabilitado */
-.auction-card[data-state="finalizada"],
-.auction-card[data-state="proxima"] {
-  opacity: 0.75; /* Les da un tono ligeramente más apagado */
+.auction-card[data-state="Closed"],
+.auction-card[data-state="Pending"] {
+  opacity: 0.75;
 }
 
 /* Cambiar la apariencia del botón cuando la subasta no está activa */
-.auction-card[data-state="finalizada"] .btn-submit,
-.auction-card[data-state="proxima"] .btn-submit {
+.auction-card[data-state="Closed"] .btn-submit,
+.auction-card[data-state="Pending"] .btn-submit {
   background-color: #334155 !important;
   color: #94a3b8 !important;
   border-color: #475569 !important;
@@ -197,8 +197,8 @@
   box-shadow: none !important;
 }
 
-.auction-card[data-state="finalizada"] .btn-submit:hover,
-.auction-card[data-state="proxima"] .btn-submit:hover {
+.auction-card[data-state="Closed"] .btn-submit:hover,
+.auction-card[data-state="Pending"] .btn-submit:hover {
   background-color: #334155 !important;
   opacity: 1;
 }

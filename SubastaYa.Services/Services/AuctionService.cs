@@ -35,9 +35,6 @@ namespace SubastaYa.Services
 
         public async Task<Auction> CreateAuctionAsync(Auction auction)
         {
-            auction.State = "Active";
-            auction.StartDate = ArgTime.Now;
-
             await _auctionRepository.AddAsync(auction);
             await _auctionRepository.SaveChangesAsync();
 

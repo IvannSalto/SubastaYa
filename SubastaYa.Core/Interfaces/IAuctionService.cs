@@ -7,28 +7,21 @@ namespace SubastaYa.Core.Interfaces
 {
     public interface IAuctionService
     {
-        // Ver las subastas en la página principal
-        Task<Auction?> GetByIdAsync(int id); // Trae una subasta específica
-        Task<IEnumerable<Auction>> GetActiveAuctionsAsync(); // Muestra subastas activas
+        Task<Auction?> GetByIdAsync(int id);
+        Task<IEnumerable<Auction>> GetActiveAuctionsAsync();
 
-        // Filtro completo para el catálogo (Estado, Categoría y Orden)
         Task<IEnumerable<Auction>> GetFilteredAuctionsAsync(string? state, int? categoryId, string? sortBy, string? search, decimal? maxPrice, decimal? minPrice);
 
-        // Publica una nueva subasta
         Task<Auction> CreateAuctionAsync(Auction auction);
 
-        // Realizar una puja (valida monto, vendedor, concurrencia y aplica anti-sniping)
         Task<bool> PlaceBidAsync(int auctionId, int buyerId, decimal amount);
         
+        Task<IEnumerable<Auction>> GetExpiredAuctionsAsync(); 
 
-        // Cierre automático de subasta
-        Task<IEnumerable<Auction>> GetExpiredAuctionsAsync(); // Busca las subastas finalizadas
-
-        // Cierra la subasta
         Task<bool> ProcessAuctionClosureAsync(int auctionId, int? currentUserId = null);
 
         // Panel de Usuario "Mis Actividades"
-        Task<IEnumerable<Auction>> GetAuctionsBySellerAsync(int sellerId); // Muestra lo que el usuario pone en venta
-        Task<IEnumerable<Auction>> GetAuctionsByBidderAsync(int buyerId); // Subastas en las que el usuario participó
+        Task<IEnumerable<Auction>> GetAuctionsBySellerAsync(int sellerId);
+        Task<IEnumerable<Auction>> GetAuctionsByBidderAsync(int buyerId);
     }
 }

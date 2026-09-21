@@ -24,6 +24,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentUserId = getCurrentUserId();
 
         auctions.forEach(subasta => {
+
+            if (subasta.startDate) {
+                let cleanStartDate = subasta.startDate.replace('Z', '');
+                if (!cleanStartDate.includes('-03:00')) {
+                    cleanStartDate += '-03:00';
+                }
+
+                const startMs = new Date(cleanStartDate).getTime();
+                const nowMs = new Date().getTime();
+
+                if (startMs > nowMs) {
+                    subasta.state = 'Pending'; 
+                }
+            }
             const stateDictionary = {
                 'Active': { text: 'En Curso', cssClass: 'activa' },
                 'Pending': { text: 'Próximamente', cssClass: 'proxima' },
@@ -55,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // ----------------------------------------
 
             const cardHTML = `
-            <article class="auction-card" data-id="${subasta.id}" data-state="${subasta.state}" data-price="${subasta.currentPrice}" data-end-date="${subasta.endDate}">
+                <article class="auction-card" data-id="${subasta.id}" data-state="${subasta.state}" data-price="${subasta.currentPrice}" data-start-date="${subasta.startDate}" data-end-date="${subasta.endDate}">
                 <div class="card-image-wrapper">
                     <img src="${subasta.urlImage}" alt="${subasta.title}">
                     <span class="badge badge-${mappedState.cssClass}">${mappedState.text}</span>  

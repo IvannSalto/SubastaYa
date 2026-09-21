@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
 </head>
 <body>
 
@@ -38,7 +40,6 @@
             <span id="userDisplayName">Usuario</span> &#9660;
           </button>
           <div class="dropdown-content" id="dropdownContent">
-              <a href="dashboard.html?tab=cuenta">Mi Cuenta</a>
               <a href="dashboard.html?tab=billetera">Mi Billetera</a>
               <a href="dashboard.html?tab=pujas">Mis Pujas</a>
             <button type="button" id="logoutBtn" class="dropdown-logout">Cerrar Sesión</button>
@@ -117,8 +118,6 @@
       </div>
     </section>
   </main>
-
-  <a href="https://wa.me/" class="whatsapp-fab" target="_blank" rel="noopener noreferrer" aria-label="Contacto WhatsApp">💬</a>
 
   <!-- FOOTER -->
   <footer class="site-footer">
@@ -299,14 +298,21 @@
             </div>
 
             <div class="form-group">
-                <label for="auctionEndDate">FECHA DE CIERRE</label>
-                <input type="datetime-local" id="auctionEndDate" required>
+                <label for="auctionStartDate">INICIO DE LA SUBASTA</label>
+                <input type="text" id="auctionStartDate" placeholder="Selecciona dia y hora..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="auctionEndDate">CIERRE DE LA SUBASTA</label>
+                <input type="text" id="auctionEndDate" placeholder="Selecciona dia y hora..." required>
             </div>
 
             <button type="submit" class="btn-primary">PUBLICAR SUBASTA</button>
         </form>
     </div>
 </div>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
   <script src="js/login.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
   <script type="module" src="js/catalog.js"></script>
