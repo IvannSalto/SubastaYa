@@ -63,6 +63,7 @@ public class WalletService : IWalletService
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Bid", amount, auctionId);
 
+            await _walletRepo.SaveChangesAsync();
            
             transaction.Complete();
         }
@@ -155,6 +156,8 @@ public class WalletService : IWalletService
 
             await UpdateWalletAsync(wallet);
             await RecordLedgerEntryAsync(walletId, "Withdrawal", amount, null);
+            
+            await _walletRepo.SaveChangesAsync();
             
             transaction.Complete();
         }

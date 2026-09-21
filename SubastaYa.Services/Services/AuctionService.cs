@@ -36,7 +36,6 @@ namespace SubastaYa.Services
         public async Task<Auction> CreateAuctionAsync(Auction auction)
         {
             await _auctionRepository.AddAsync(auction);
-            await _auctionRepository.SaveChangesAsync();
 
             //Crea auditoria al crear la subasta
             await _auditService.RegisterLogAsync(
@@ -52,6 +51,8 @@ namespace SubastaYa.Services
                     auction.EndDate
                 }
             );
+            
+            await _auctionRepository.SaveChangesAsync();
             return auction;
         }
 
@@ -110,7 +111,6 @@ namespace SubastaYa.Services
 
             try
             {
-                await _auctionRepository.SaveChangesAsync();
                 //registra auditoria al realizar una puja exitosa
                 await _auditService.RegisterLogAsync(
                     entity: nameof(Auction),
@@ -174,8 +174,7 @@ namespace SubastaYa.Services
             }
 
             await _auctionRepository.UpdateAsync(auction);
-            await _auctionRepository.SaveChangesAsync();
-
+            
             //Registra auditoria al cerrar una subasta
             await _auditService.RegisterLogAsync(
                 entity: nameof(Auction),

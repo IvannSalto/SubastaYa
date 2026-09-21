@@ -17,8 +17,6 @@ namespace SubastaYa.Infrastructure.Repositories
         public async Task AddAsync(TransactionLedger transaction)
         {
             await _context.TransactionLedgers.AddAsync(transaction);
-            
-            await _context.SaveChangesAsync();
         }
         
         public async Task<IEnumerable<TransactionLedger>> GetByWalletIdAsync(int walletId)
