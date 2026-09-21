@@ -1,3 +1,5 @@
+import { showToast } from './utils.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = 'https://localhost:7281/api';
 
@@ -9,6 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const token = localStorage.getItem('token');
     const currentUser = getSession();
+
+    if (!currentUser || !token) {
+        window.location.replace('index.html');
+        return; // Detiene la ejecución del resto del código
+    }
 
     // --- 1. GESTIÓN DE PESTAÑAS (TABS) ---
     const tabBtns = document.querySelectorAll('.tab-btn');
@@ -80,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dashRetained = document.getElementById('dashRetainedBalance');
 
                 if (dashBalance) dashBalance.textContent = `$ ${Number(balance).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
-                if (dashRetained) dashRetained.textContent = `$ ${Number(dashRetained).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
+                if (dashRetained) dashRetained.textContent = `$ ${Number(retained).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
 
                 
                 loadWalletMovements();
@@ -110,27 +117,92 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                movements.forEach(mov => {
-                    const dateFormatted = new Date(mov.date || mov.createdAt).toLocaleDateString('es-AR', {
+                const paidAuctionIds = movements
+                    .filter(m => {
+                        const t = (m.type || m.Type || '').toLowerCase();
+                        return t === 'auctionpayment' || t === 'deduct'; 
+                    })
+                    .map(m => m.auctionId || m.AuctionId);
+
+                const visibleMovements = movements.filter(m => {
+                    const typeLower = (m.type || m.Type || '').toLowerCase();
+                    const auctionId = m.auctionId || m.AuctionId;
+
+                    if (typeLower === 'bid' && paidAuctionIds.includes(auctionId)) {
+                        return false;
+                    }
+                    return true;
+                });
+
+                const typeDictionary = {
+                    'Deposit': 'Ingreso de Dinero',
+                    'Withdrawal': 'Retiro de Fondos',
+                    'Bid': 'Retención por Puja',
+                    'BidRefund': 'Devolución de Puja',
+                    'Sale': 'Ingreso por Venta',
+                    'Fee': 'Comisión de Plataforma',
+                    'AuctionPayment': 'Pago de Subasta Ganada',
+                    'Deduct': 'Pago de Subasta Ganada' 
+                };
+
+                const outflowTypes = ['withdrawal', 'bid', 'fee', 'retención por puja', 'auctionpayment', 'deduct'];
+
+                visibleMovements.forEach(mov => {
+                    const dateFormatted = new Date(mov.date || mov.Date).toLocaleDateString('es-AR', {
                         day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
                     });
-                    const isPositive = mov.amount > 0;
-                    const amountClass = isPositive ? 'text-success' : 'text-danger';
-                    const sign = isPositive ? '+' : '';
+
+                    const typeRaw = String(mov.type || mov.Type || '').trim();
+                    const description = typeDictionary[typeRaw] || typeRaw || 'Movimiento';
+
+                    let amount = Number(mov.amount || mov.Amount || 0);
+                    const typeLower = typeRaw.toLowerCase();
+
+                    if (outflowTypes.includes(typeLower)) {
+                        amount = -Math.abs(amount);
+                    } else {
+                        amount = Math.abs(amount);
+                    }
+
+                    const sign = amount >= 0 ? '+' : '';
+                    
+                    let statusText = 'Completado';
+                    let textColor = '';   // Color de la letra
+                    let badgeBg = '';     // Fondo del cartelito de estado
+
+                    if (typeLower === 'bid' || typeLower === 'retención por puja') {
+                        statusText = 'Pendiente';
+                        textColor = '#fbbf24';
+                        badgeBg = 'rgba(251, 191, 36, 0.1)';
+                    } else if (amount >= 0) {
+                        statusText = 'Completado';
+                        textColor = '#34d399';
+                        badgeBg = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        statusText = 'Completado';
+                        textColor = '#f87171';
+                        badgeBg = 'rgba(248, 113, 113, 0.1)';
+                    }
 
                     historyTableBody.innerHTML += `
                         <tr>
                             <td>${dateFormatted}</td>
-                            <td>${mov.description || mov.type || 'Movimiento'}</td>
-                            <td class="${amountClass}">${sign}$ ${Number(mov.amount).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
-                            <td>Completado</td>
+                            <td>${description} ${mov.auctionId ? `<span style="font-size:0.75rem; color:#64748b;">(Sub: #${mov.auctionId})</span>` : ''}</td>
+                            <td style="color: ${textColor}; font-weight: bold;">
+                                ${sign}$ ${amount.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td>
+                                <span style="background: ${badgeBg}; color: ${textColor}; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">
+                                    ${statusText}
+                                </span>
+                            </td>
                         </tr>
                     `;
                 });
             }
         } catch (error) {
             console.error('Error al cargar movimientos:', error);
-            historyTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Error al cargar historial.</td></tr>`;
+            historyTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #f87171;">Error al cargar el historial.</td></tr>`;
         }
     }
 
@@ -150,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             const auctions = data.data || data;
 
-            // Filtramos subastas que contengan al menos una puja del usuario actual
             const myAuctions = auctions.filter(subasta => 
                 subasta.bids && subasta.bids.some(b => b.buyerId === currentUser.id)
             );
@@ -195,5 +266,82 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.innerHTML = '<p style="color: #ef4444; grid-column: 1/-1; text-align: center;">Error al cargar tus pujas.</p>';
         }
     }
+
+    //Modal ingresar o retirar dinero
+    const transactionModal = document.getElementById('transactionModal');
+    const closeTransactionBtn = document.getElementById('closeTransactionBtn');
+    const transactionForm = document.getElementById('transactionForm');
+    const transactionModalTitle = document.getElementById('transactionModalTitle');
+    const transactionSubmitBtn = document.getElementById('transactionSubmitBtn');
+    const transactionTypeInput = document.getElementById('transactionType');
+
+    const openTransactionModal = (type) => {
+        transactionTypeInput.value = type;
+        if (type === 'deposit') {
+            transactionModalTitle.textContent = 'INGRESAR DINERO';
+            transactionSubmitBtn.textContent = 'Confirmar Ingreso';
+        } else {
+            transactionModalTitle.textContent = 'RETIRAR FONDOS';
+            transactionSubmitBtn.textContent = 'Confirmar Retiro';
+        }
+        transactionForm.reset();
+        transactionModal.classList.add('active');
+    };
+
+    document.getElementById('btnDeposit')?.addEventListener('click', () => openTransactionModal('deposit'));
+    document.getElementById('btnWithdraw')?.addEventListener('click', () => openTransactionModal('withdraw'));
+
+    closeTransactionBtn?.addEventListener('click', () => transactionModal.classList.remove('active'));
+    window.addEventListener('click', (e) => {
+        if (e.target === transactionModal) transactionModal.classList.remove('active');
+    });
+
+    // Enviar formulario a C#
+    transactionForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const amount = parseFloat(document.getElementById('transactionAmount').value);
+        const type = transactionTypeInput.value; // 'deposit' o 'withdraw'
+
+        const endpoint = type === 'deposit'
+            ? `${API_BASE_URL}/Wallet/deposit`
+            : `${API_BASE_URL}/Wallet/withdraw`;
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ amount: amount })
+            });
+
+            const result = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                // 1. Cerramos el modal
+                transactionModal.classList.remove('active');
+
+                // 2. Recargamos saldos
+                loadWalletData();
+                if (typeof window.fetchWalletBalance === 'function') {
+                    window.fetchWalletBalance();
+                }
+
+                // 3. MOSTRAMOS EL TOAST DE ÉXITO ESTILIZADO
+                showToast(`¡${type === 'deposit' ? 'Ingreso' : 'Retiro'} de $${amount.toLocaleString('es-AR')} procesado con éxito!`);
+
+            } else {
+                // MOSTRAMOS EL TOAST DE ERROR (el 'true' lo pinta de rojo)
+                const errorMsg = result.message || result.Message || result.title || 'Error al procesar la transacción.';
+                showToast(errorMsg, true);
+            }
+        } catch (error) {
+            console.error('Error de red:', error);
+            // MOSTRAMOS ERROR DE CONEXIÓN
+            showToast('No se pudo conectar con el servidor.', true);
+        }
+    });
 
 });

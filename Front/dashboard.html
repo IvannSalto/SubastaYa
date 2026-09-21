@@ -101,6 +101,26 @@
     </section>
 </main>
 
+<!-- Modal transaccion billetera -->
+<div class="modal-overlay" id="transactionModal">
+    <div class="modal-card">
+        <button class="modal-close" id="closeTransactionBtn" aria-label="Cerrar">&times;</button>
+        <h2 class="modal-title" id="transactionModalTitle">Ingresar Dinero</h2>
+
+        <form id="transactionForm">
+            <!-- Input oculto para saber si estamos depositando o retirando -->
+            <input type="hidden" id="transactionType" value="deposit">
+
+            <div class="form-group">
+                <label for="transactionAmount">MONTO ($)</label>
+                <input type="number" id="transactionAmount" placeholder="Ej: 15000" required step="100" min="100">
+            </div>
+
+            <button type="submit" class="btn-primary" id="transactionSubmitBtn">Confirmar</button>
+        </form>
+    </div>
+</div>
+
 <script src="js/login.js"></script>
 <script src="js/dashboard.js" type="module"></script>
 </body>

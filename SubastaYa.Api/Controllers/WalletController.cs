@@ -3,6 +3,8 @@ using SubastaYa.Api.Responses;
 using SubastaYa.Core.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using SubastaYa.Api.Extensions;
+using SubastaYa.Core.IRepositories;
 
 namespace SubastaYa.API.Controllers
 {
@@ -12,10 +14,14 @@ namespace SubastaYa.API.Controllers
     public class WalletController : ControllerBase
     {
         private readonly IWalletService _walletService;
+        private readonly IWalletRepository _walletRepository;
+        private readonly ITransactionLedgerRepository _ledgerRepository;
 
-        public WalletController(IWalletService walletService)
+        public WalletController(IWalletService walletService, IWalletRepository walletRepository, ITransactionLedgerRepository ledgerRepository)
         {
             _walletService = walletService;
+            _walletRepository = walletRepository;
+            _ledgerRepository = ledgerRepository;
         }
 
         [HttpGet("user/{userId}")]
@@ -26,20 +32,37 @@ namespace SubastaYa.API.Controllers
             return Ok(ApiResponse<object>.Ok(wallet, "Billetera obtenida correctamente."));
         }
 
-        [HttpPost("{walletId}/deposit")]
-        public async Task<IActionResult> Deposit(int walletId, [FromBody] TransactionRequest request)
+        [HttpPost("deposit")]
+        public async Task<IActionResult> Deposit([FromBody] TransactionRequest request)
         {
-            await _walletService.DepositFundsAsync(walletId, request.Amount);
+            int userId = User.GetUserId();
+            var wallet = await _walletService.GetWalletByUserIdAsync(userId);
+            
+            await _walletService.DepositFundsAsync(wallet.Id, request.Amount);
 
             return Ok(ApiResponse<object>.Ok(null, $"Se depositaron ${request.Amount} exitosamente."));
         }
 
-        [HttpPost("{walletId}/withdraw")]
-        public async Task<IActionResult> Withdraw(int walletId, [FromBody] TransactionRequest request)
+        [HttpPost("withdraw")]
+        public async Task<IActionResult> Withdraw([FromBody] TransactionRequest request)
         {
-            await _walletService.WithdrawFundsAsync(walletId, request.Amount);
+            int userId = User.GetUserId();
+            var wallet = await _walletService.GetWalletByUserIdAsync(userId);
+            
+            await _walletService.WithdrawFundsAsync(wallet.Id, request.Amount);
 
             return Ok(ApiResponse<object>.Ok(null, $"Se retiraron ${request.Amount} exitosamente."));
+        }
+        
+        [HttpGet("user/{userId}/movements")]
+        public async Task<IActionResult> GetMovements(int userId)
+        {
+            var wallet = await _walletRepository.GetByUserIdAsync(userId);
+            if (wallet == null) return NotFound(new { message = "Billetera no encontrada." });
+            
+            var movements = await _ledgerRepository.GetByWalletIdAsync(wallet.Id);
+            
+            return Ok(new { data = movements });
         }
     }
 

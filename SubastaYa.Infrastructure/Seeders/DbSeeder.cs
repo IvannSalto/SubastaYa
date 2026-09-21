@@ -95,13 +95,13 @@ namespace SubastaYa.Infrastructure.Seeders
             //------ Registros -----------
             var transacciones = new List<TransactionLedger>
             {
-                new TransactionLedger { WalletId = wallets[1].Id, Type = "Fondeo Inicial", Amount = 150000, Date = ArgTime.Now.AddDays(-2) },
-                new TransactionLedger { WalletId = wallets[2].Id, Type = "Fondeo Inicial", Amount = 200000, Date = ArgTime.Now.AddDays(-2) },
-                new TransactionLedger { WalletId = wallets[3].Id, Type = "Fondeo Inicial", Amount = 500, Date = ArgTime.Now.AddDays(-2) },
-                new TransactionLedger { WalletId = wallets[4].Id, Type = "Fondeo Inicial", Amount = 100000, Date = ArgTime.Now.AddDays(-2) },
+                new TransactionLedger { WalletId = wallets[1].Id, Type = "Deposit", Amount = 150000, Date = ArgTime.Now.AddDays(-2) },
+                new TransactionLedger { WalletId = wallets[2].Id, Type = "Deposit", Amount = 200000, Date = ArgTime.Now.AddDays(-2) },
+                new TransactionLedger { WalletId = wallets[3].Id, Type = "Deposit", Amount = 500, Date = ArgTime.Now.AddDays(-2) },
+                new TransactionLedger { WalletId = wallets[4].Id, Type = "Deposit", Amount = 100000, Date = ArgTime.Now.AddDays(-2) },
 
-                new TransactionLedger { WalletId = wallets[1].Id, Type = "Retención de Puja", Amount = 45000, Date = bids[1].BidDate, AuctionId = subastas[0].Id },
-                new TransactionLedger { WalletId = wallets[4].Id, Type = "Retención de Puja", Amount = 100000, Date = bids[2].BidDate, AuctionId = subastas[3].Id }
+                new TransactionLedger { WalletId = wallets[1].Id, Type = "Bid", Amount = 45000, Date = bids[1].BidDate, AuctionId = subastas[0].Id },
+                new TransactionLedger { WalletId = wallets[4].Id, Type = "Bid", Amount = 100000, Date = bids[2].BidDate, AuctionId = subastas[3].Id }
             };
 
             await context.TransactionLedgers.AddRangeAsync(transacciones);

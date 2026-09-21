@@ -84,11 +84,18 @@ namespace SubastaYa.API.Controllers
         [HttpPost("{auctionId}/bid")]
         public async Task<IActionResult> PlaceBid(int auctionId, [FromBody] BidRequest request)
         {
-            int buyerId = User.GetUserId();
-            
-            // motor financiero
-            await _auctionService.PlaceBidAsync(auctionId, buyerId, request.Amount);
-            return Ok(ApiResponse<object>.Ok(null, "Puja realizada con éxito. El dinero fue retenido."));
+            try
+            {
+                int buyerId = User.GetUserId();
+
+                // motor financiero
+                await _auctionService.PlaceBidAsync(auctionId, buyerId, request.Amount);
+                return Ok(ApiResponse<object>.Ok(null, "Puja realizada con éxito. El dinero fue retenido."));
+            }
+            catch (Exception ex) when (ex.Message.Contains("múltiples operaciones") || ex.Message.Contains("ConcurrencyConflict"))
+            {
+                return Conflict(ApiResponse<object>.Fail("Alguien mas intento pujar exactamente al mismo tiempo. Por favor actualiza la pagina y volve a intentarlo."));
+            }
         }
 
         [HttpPost("{auctionId}/close")]

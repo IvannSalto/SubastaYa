@@ -198,12 +198,17 @@ window.fetchWalletBalance = async () => {
     });
   }
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      clearSession();
-      showToast('Sesión cerrada correctamente');
-    });
-  }
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            clearSession();
+
+            if (window.location.pathname.includes('dashboard.html')) {
+                window.location.replace('index.html');
+            } else {
+                showToast('Sesión cerrada correctamente');
+            }
+        });
+    }
 
   // --- MODAL DE AUTENTICACIÓN ---
   if (openLoginBtn && loginModal) {

@@ -168,7 +168,7 @@ namespace SubastaYa.Services
                 await _walletService.DeductFundsAsync(winnerWallet.Id, highestBid.Amount, auctionId);
                 
                 var sellerWallet = await _walletService.GetWalletByUserIdAsync(auction.SellerId); //le pagamos al vendedor
-                await _walletService.DepositFundsAsync(sellerWallet.Id, highestBid.Amount, auctionId);
+                await _walletService.DepositFundsAsync(sellerWallet.Id, highestBid.Amount, auctionId, "Sale");
             }
             else
             {

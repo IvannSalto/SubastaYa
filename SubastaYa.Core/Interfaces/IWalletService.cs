@@ -12,9 +12,9 @@ public interface IWalletService
 
     Task ReleaseFundsAsync(int walletId, decimal amount, int? auctionId = null);
 
-    Task DeductFundsAsync(int walletId, decimal amount, int? auctionId = null);
+    Task DeductFundsAsync(int walletId, decimal amount, int? auctionId = null, string transactionType = "AuctionPayment");
     
-    Task DepositFundsAsync(int walletId, decimal amount, int? auctionId = null);
+    Task DepositFundsAsync(int walletId, decimal amount, int? auctionId = null, string transactionType = "Deposit");
     
     Task WithdrawFundsAsync(int walletId, decimal amount);
 }

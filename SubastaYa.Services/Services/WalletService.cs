@@ -61,7 +61,7 @@ public class WalletService : IWalletService
             wallet.BalanceHeld += amount;
 
             await UpdateWalletAsync(wallet);
-            await RecordLedgerEntryAsync(walletId, "Retención por Puja", amount, auctionId);
+            await RecordLedgerEntryAsync(walletId, "Bid", amount, auctionId);
 
            
             transaction.Complete();
@@ -86,13 +86,13 @@ public class WalletService : IWalletService
             wallet.AvailableBalance += amount;
 
             await UpdateWalletAsync(wallet);
-            await RecordLedgerEntryAsync(walletId, "Liberación de Puja", amount, auctionId);
+            await RecordLedgerEntryAsync(walletId, "BidRefund", amount, auctionId);
 
             transaction.Complete();
         }
     }
 
-    public async Task DeductFundsAsync(int walletId, decimal amount, int? auctionId = null)
+    public async Task DeductFundsAsync(int walletId, decimal amount, int? auctionId = null, string transactionType = "AuctionPayment")
     {
         if (amount <= 0)
             throw new ArgumentException("El monto a descontar debe ser mayor a cero.");
@@ -109,13 +109,13 @@ public class WalletService : IWalletService
             wallet.BalanceHeld -= amount;
 
             await UpdateWalletAsync(wallet);
-            await RecordLedgerEntryAsync(walletId, "Cobro de Subasta", amount, auctionId);
+            await RecordLedgerEntryAsync(walletId, transactionType, amount, auctionId);
                     
             transaction.Complete();
         }
     }
 
-    public async Task DepositFundsAsync(int walletId, decimal amount, int? auctionId = null)
+    public async Task DepositFundsAsync(int walletId, decimal amount, int? auctionId = null, string transactionType = "Deposit")
     {
         if(amount <= 0 )
             throw new ArgumentException("El monto a depositar debe ser mayor a cero.");
@@ -130,7 +130,7 @@ public class WalletService : IWalletService
             wallet.AvailableBalance += amount;
 
             await UpdateWalletAsync(wallet);
-            await RecordLedgerEntryAsync(walletId, "Pago por Subasta Vendida", amount, auctionId);
+            await RecordLedgerEntryAsync(walletId, transactionType, amount, auctionId);
 
             transaction.Complete();
         }
@@ -154,7 +154,7 @@ public class WalletService : IWalletService
             wallet.AvailableBalance -= amount;
 
             await UpdateWalletAsync(wallet);
-            await RecordLedgerEntryAsync(walletId, "Retiro de Fondos", amount, null);
+            await RecordLedgerEntryAsync(walletId, "Withdrawal", amount, null);
             
             transaction.Complete();
         }
